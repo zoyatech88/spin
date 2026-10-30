@@ -1,0 +1,2910 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Spin FASDA PARIGI MOUTONG - ARDIANSYAH, S.Pd | SD NEGERI PARANGGI</title>
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Canvas Confetti Library for Winner Celebration -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@700;800&display=swap" rel="stylesheet">
+
+    <!-- CRITICAL FALLBACK STYLES -->
+    <style>
+        /* Essential Resets & Fonts */
+        * { box-sizing: border-box; }
+        body { 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif; 
+            background-color: #0f172a; 
+            color: #1e293b; 
+            min-height: 100vh;
+        }
+
+        .font-mono-digits {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* CRITICAL: Hidden class guard to prevent modal flashing */
+        .hidden { display: none !important; }
+        
+        /* Custom Glassmorphism & Visual Aesthetics */
+        .glass-header {
+            background: linear-gradient(135deg, #1e1b4b 0%, #312e81 50%, #4338ca 100%);
+        }
+        
+        .glass-card {
+            background: rgba(255, 255, 255, 0.96);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .dark-glass-card {
+            background: rgba(30, 41, 59, 0.85);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(51, 65, 85, 0.6);
+        }
+
+        /* Pointer Indicator for Wheel */
+        .wheel-pointer {
+            width: 0;
+            height: 0;
+            border-left: 18px solid transparent;
+            border-right: 18px solid transparent;
+            border-top: 32px solid #ef4444;
+            filter: drop-shadow(0px 4px 6px rgba(0, 0, 0, 0.4));
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 8px; }
+        ::-webkit-scrollbar-thumb:hover { background: #64748b; }
+
+        /* Pulse Animation for Timer Warning */
+        @keyframes timerPulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.02); opacity: 0.85; }
+        }
+
+        .animate-timer-pulse {
+            animation: timerPulse 1s infinite ease-in-out;
+        }
+
+        /* Print Specific Optimization */
+        @media print {
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .glass-card { border: none !important; shadow: none !important; background: white !important; }
+        }
+
+        /* Fullscreen Overflow & Scrollbar Fix */
+        :fullscreen, :-webkit-full-screen, :-moz-full-screen, :-ms-fullscreen {
+            overflow-y: auto !important;
+            background-color: #0f172a !important;
+            width: 100vw;
+            height: 100vh;
+        }
+    </style>
+</head>
+<body class="bg-slate-900 text-slate-800 antialiased min-h-screen flex flex-col selection:bg-indigo-500 selection:text-white overflow-y-auto">
+
+    <!-- ================= HEADER TOP BAR ================= -->
+    <header class="glass-header text-white shadow-xl border-b border-indigo-900/50 sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+            <div class="flex items-center justify-between flex-wrap gap-3">
+                
+                <!-- Logo & Owner Info -->
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-400 to-amber-200 text-indigo-950 flex items-center justify-center font-black text-xl shadow-lg ring-2 ring-amber-300/40">
+                        <i class="fa-solid fa-dharmachakra animate-spin-slow"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center space-x-2">
+                            <h1 class="font-extrabold text-lg sm:text-xl tracking-tight text-white">SPIN FASDA PARIGI MOUTONG</h1>
+                            <span class="bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">v2.6 Pro</span>
+                        </div>
+                        <p class="text-xs text-indigo-200 font-medium flex items-center space-x-1.5">
+                            <i class="fa-solid fa-user-shield text-amber-300 text-[11px]"></i>
+                            <span>Pemilik: <strong class="text-white font-semibold">ARDIANSYAH, S.Pd</strong> | SD NEGERI PARANGGI</span>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Status Badge & Action Controls -->
+                <div class="flex items-center space-x-2.5">
+                    
+                    <!-- Auto-Save Cloud Badge -->
+                    <div id="cloudSyncBadge" class="flex items-center space-x-1.5 text-xs px-3 py-1.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-inner">
+                        <i id="cloudSyncIcon" class="fa-solid fa-cloud-check text-emerald-400 text-sm"></i>
+                        <span id="cloudSyncText" class="font-semibold text-[11px]">Tersimpan Otomatis</span>
+                    </div>
+
+                    <!-- Mute / Unmute Sound Toggle -->
+                    <button id="soundToggleBtn" onclick="toggleSound()" class="p-2.5 rounded-xl bg-indigo-900/80 hover:bg-indigo-800 text-amber-300 border border-indigo-700/60 shadow transition active:scale-95" title="Beralih Suara (Mute/Unmute)">
+                        <i id="soundIcon" class="fa-solid fa-volume-high text-base"></i>
+                    </button>
+
+                    <!-- Fullscreen Toggle Button -->
+                    <button id="fullscreenToggleBtn" onclick="toggleFullScreen()" class="p-2.5 rounded-xl bg-indigo-900/80 hover:bg-indigo-800 text-amber-300 border border-indigo-700/60 shadow transition active:scale-95" title="Layar Penuh (Fullscreen)">
+                        <i id="fullscreenIcon" class="fa-solid fa-expand text-base"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- TAB NAVIGATION BUTTONS -->
+            <nav class="flex space-x-1 sm:space-x-2 mt-4 pt-2 border-t border-indigo-800/60 overflow-x-auto no-scrollbar">
+                <button id="nav-spin" onclick="switchTab('spin')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all bg-indigo-800 text-amber-400 shadow-md border border-indigo-700/50">
+                    <i class="fa-solid fa-circle-play text-amber-300"></i>
+                    <span>1. Spin Nama</span>
+                </button>
+
+                <button id="nav-spin-sekolah" onclick="switchTab('spin-sekolah')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white">
+                    <i class="fa-solid fa-dharmachakra"></i>
+                    <span>2. Spin Sekolah</span>
+                </button>
+
+                <button id="nav-sekolah" onclick="switchTab('sekolah')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white">
+                    <i class="fa-solid fa-school"></i>
+                    <span>3. Data Sekolah</span>
+                </button>
+
+                <button id="nav-guru" onclick="switchTab('guru')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white">
+                    <i class="fa-solid fa-users-gear"></i>
+                    <span>4. Data Guru / Siswa</span>
+                </button>
+
+                <button id="nav-fasda" onclick="switchTab('fasda')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white">
+                    <i class="fa-solid fa-chart-pie"></i>
+                    <span>5. Profil FASDA & Rekap</span>
+                </button>
+
+                <button id="nav-timer" onclick="switchTab('timer')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white bg-indigo-900/40 border border-amber-400/30">
+                    <i class="fa-solid fa-stopwatch text-amber-300 animate-pulse"></i>
+                    <span>6. Pengaturan Waktu</span>
+                </button>
+
+                <!-- MENU BACA SAYA / PETUNJUK PENGGUNAAN -->
+                <button id="nav-bacasaya" onclick="switchTab('bacasaya')" class="nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white bg-amber-500/10 border border-amber-400/30">
+                    <i class="fa-solid fa-book-open text-amber-300"></i>
+                    <span>7. Baca Saya</span>
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- ================= MAIN CONTENT WRAPPER ================= -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ================= TAB 1: HALAMAN UTAMA (SPIN WHEEL NAMA) ================= -->
+        <section id="tab-spin" class="tab-content space-y-6">
+            
+            <!-- School Selector Bar -->
+            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xl border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center space-x-3">
+                    <div class="p-3 bg-indigo-100 text-indigo-700 rounded-xl font-bold">
+                        <i class="fa-solid fa-building-columns text-xl"></i>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-0.5">Pilih Sekolah Sasaran Untuk Spin:</label>
+                        <select id="spinSchoolSelect" onchange="onSpinSchoolChange()" class="bg-slate-50 border border-slate-300 text-slate-900 text-sm sm:text-base font-bold rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 block w-full p-2.5 shadow-sm">
+                            <!-- Options injected dynamically -->
+                        </select>
+                    </div>
+                </div>
+
+                <div class="flex items-center space-x-3 bg-slate-100/80 p-2.5 rounded-xl border border-slate-200/80">
+                    <div class="text-right px-2">
+                        <span class="block text-[10px] uppercase font-bold text-slate-400">Status Peserta</span>
+                        <div class="text-xs font-bold text-slate-700">
+                            <span id="countActive" class="text-emerald-600 font-extrabold text-sm">0</span> Aktif / 
+                            <span id="countInactive" class="text-slate-400 font-extrabold text-sm">0</span> Terpilih
+                        </div>
+                    </div>
+                    <button onclick="resetCurrentSchoolStatus()" class="px-3.5 py-2 bg-slate-800 hover:bg-slate-900 text-amber-300 font-bold rounded-xl text-xs flex items-center space-x-1.5 shadow transition active:scale-95" title="Kembalikan semua peserta terpilih menjadi aktif lagi">
+                        <i class="fa-solid fa-rotate-left text-amber-400"></i>
+                        <span>Reset Status Spin</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- SPIN SECTION GRID (CANVAS WHEEL + SIDEBAR DAFTAR PESERTA) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                
+                <!-- WHEEL DISPLAY CONTAINER (COL-8) -->
+                <div class="lg:col-span-7 xl:col-span-8 glass-card rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col items-center justify-center relative min-h-[400px] sm:min-h-[460px] overflow-hidden">
+                    
+                    <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-amber-500/5 pointer-events-none"></div>
+
+                    <!-- Target School Header Badge -->
+                    <div class="mb-3 text-center">
+                        <span id="schoolBadge" class="inline-block bg-indigo-100 text-indigo-900 text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full border border-indigo-200 shadow-sm">
+                            Nama Sekolah
+                        </span>
+                    </div>
+
+                    <!-- Wheel Canvas Pointer Arrow -->
+                    <div class="wheel-pointer z-10 -mb-3"></div>
+
+                    <!-- Wheel Canvas -->
+                    <div class="relative flex items-center justify-center my-2 max-w-full">
+                        <canvas id="wheelCanvas" width="440" height="440" class="max-w-full h-auto drop-shadow-2xl transition-transform"></canvas>
+                        
+                        <!-- Center Spin Action Button -->
+                        <button id="spinBtn" onclick="spinWheel()" class="absolute w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-indigo-950 font-black text-base shadow-2xl border-4 border-white hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center cursor-pointer group z-20">
+                            <i class="fa-solid fa-play text-xl group-hover:scale-125 transition"></i>
+                            <span class="text-[11px] font-black uppercase tracking-wider">SPIN</span>
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-slate-400 mt-4 text-center font-medium">
+                        <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i> Klik tombol <strong>SPIN</strong> di tengah roda untuk memulai pengundian acak.
+                    </p>
+                </div>
+
+                <!-- PARTICIPANTS LIST SIDEBAR (COL-4) -->
+                <div class="lg:col-span-5 xl:col-span-4 glass-card rounded-3xl p-5 shadow-xl flex flex-col min-h-[400px] sm:min-h-[460px] max-h-[520px]">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-list-check text-indigo-600"></i>
+                            <span>Daftar Nama Peserta</span>
+                        </h3>
+                        <span class="text-[11px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded-md font-semibold">Otomatis Non-Aktif</span>
+                    </div>
+
+                    <!-- Filter Buttons -->
+                    <div class="flex items-center space-x-1 my-3 bg-slate-100 p-1 rounded-xl text-xs font-semibold">
+                        <button id="filter-all" onclick="filterParticipantList('all')" class="flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition">Semua</button>
+                        <button id="filter-active" onclick="filterParticipantList('active')" class="flex-1 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200 transition">Belum Terpilih</button>
+                        <button id="filter-done" onclick="filterParticipantList('done')" class="flex-1 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200 transition">Sudah Terpilih</button>
+                    </div>
+
+                    <!-- List Container -->
+                    <div id="participantListContainer" class="flex-1 overflow-y-auto space-y-2 pr-1">
+                        <!-- Items rendered via JavaScript -->
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 2: SPIN SEKOLAH ================= -->
+        <section id="tab-spin-sekolah" class="tab-content hidden space-y-6">
+            
+            <div class="glass-card rounded-2xl p-4 sm:p-5 shadow-xl border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-3 pb-3 border-b border-slate-200">
+                    <div>
+                        <h3 class="font-extrabold text-slate-800 text-sm sm:text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-list-check text-indigo-600"></i>
+                            <span>Pilih Sekolah Hadir Kegiatan</span>
+                        </h3>
+                        <p class="text-xs text-slate-500">Centang sekolah-sekolah yang akan diikutsertakan pada pengundian roda Spin Sekolah.</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2 flex-wrap gap-1.5">
+                        <button onclick="selectAllSchoolsForSpin(true)" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl text-xs transition">
+                            <i class="fa-solid fa-check-double mr-1"></i> Pilih Semua
+                        </button>
+                        <button onclick="selectAllSchoolsForSpin(false)" class="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition">
+                            Hapus Pilihan
+                        </button>
+                        <button onclick="resetSchoolSpinStatus()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-900 text-amber-300 font-bold rounded-xl text-xs transition flex items-center space-x-1.5 shadow">
+                            <i class="fa-solid fa-rotate-left text-amber-400"></i>
+                            <span>Reset Status Spin Sekolah</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="schoolAttendanceContainer" class="flex flex-wrap gap-2 max-h-36 overflow-y-auto p-1">
+                    <!-- Dynamic Checkboxes -->
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                <div class="lg:col-span-7 xl:col-span-8 glass-card rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col items-center justify-center relative min-h-[400px] sm:min-h-[460px] overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-tr from-indigo-500/5 via-transparent to-amber-500/5 pointer-events-none"></div>
+
+                    <div class="mb-3 text-center">
+                        <span id="spinSchoolStatusBadge" class="inline-block bg-indigo-100 text-indigo-900 text-xs sm:text-sm font-extrabold px-4 py-1.5 rounded-full border border-indigo-200 shadow-sm">
+                            Pengundian Antar Sekolah
+                        </span>
+                    </div>
+
+                    <div class="wheel-pointer z-10 -mb-3"></div>
+
+                    <div class="relative flex items-center justify-center my-2 max-w-full">
+                        <canvas id="schoolWheelCanvas" width="440" height="440" class="max-w-full h-auto drop-shadow-2xl transition-transform"></canvas>
+                        
+                        <button id="spinSchoolBtn" onclick="spinSchoolWheel()" class="absolute w-20 h-20 rounded-full bg-gradient-to-tr from-amber-500 via-amber-400 to-yellow-300 text-indigo-950 font-black text-base shadow-2xl border-4 border-white hover:scale-105 active:scale-95 transition flex flex-col items-center justify-center cursor-pointer group z-20">
+                            <i class="fa-solid fa-play text-xl group-hover:scale-125 transition"></i>
+                            <span class="text-[11px] font-black uppercase tracking-wider">SPIN</span>
+                        </button>
+                    </div>
+
+                    <p class="text-xs text-slate-400 mt-4 text-center font-medium">
+                        <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i> Klik tombol <strong>SPIN</strong> untuk mengundi sekolah mana yang dipanggil.
+                    </p>
+                </div>
+
+                <div class="lg:col-span-5 xl:col-span-4 glass-card rounded-3xl p-5 shadow-xl flex flex-col min-h-[400px] sm:min-h-[460px] max-h-[520px]">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-school text-indigo-600"></i>
+                            <span>Daftar Sekolah Terpilih</span>
+                        </h3>
+                        <span id="schoolSpinActiveCount" class="text-[11px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-md font-bold">0 Aktif</span>
+                    </div>
+
+                    <div id="schoolSpinSidebarContainer" class="flex-1 overflow-y-auto space-y-2 mt-3 pr-1">
+                        <!-- Items with Active / Terpilih toggle rendered via JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= TAB 3: DATA SEKOLAH / KELAS ================= -->
+        <section id="tab-sekolah" class="tab-content hidden space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-4 glass-card rounded-3xl p-6 shadow-xl border border-slate-200 h-fit">
+                    <h3 id="schoolFormTitle" class="font-extrabold text-slate-800 text-base mb-4 flex items-center space-x-2 pb-3 border-b border-slate-200">
+                        <i class="fa-solid fa-school-circle-plus text-indigo-600"></i>
+                        <span>Tambah Sekolah / Kelas</span>
+                    </h3>
+
+                    <form id="schoolForm" onsubmit="handleSchoolFormSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="schoolId">
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Jenjang Pendidikan *</label>
+                            <select id="schoolLevel" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-sm focus:ring-2 focus:ring-indigo-500 font-bold bg-white">
+                                <option value="SD/MI">SD / MI</option>
+                                <option value="SMP/MTs">SMP / MTs</option>
+                                <option value="SMA/MA/SMK">SMA / MA / SMK</option>
+                                <option value="PAUD/TK">PAUD / TK</option>
+                                <option value="PKBM">PKBM</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Nama Sekolah / Kelas *</label>
+                            <textarea id="schoolName" rows="4" required placeholder="Contoh Input/Paste Massal:&#10;SD NEGERI PARANGGI&#10;SDN 1 AMPIBABO&#10;SDN 2 PARANGGI" class="w-full p-3.5 rounded-2xl border border-slate-300 text-xs sm:text-sm font-medium focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"></textarea>
+                            <p class="text-[11px] text-slate-500 font-medium mt-1">
+                                <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i>
+                                Bisa paste banyak nama sekolah sekaligus (satu nama per baris).
+                            </p>
+                        </div>
+
+                        <div class="flex gap-2 pt-2">
+                            <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition flex items-center justify-center space-x-1">
+                                <i class="fa-solid fa-floppy-disk"></i>
+                                <span>Simpan Data</span>
+                            </button>
+                            <button type="button" onclick="resetSchoolForm()" class="bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold px-3 py-2.5 rounded-xl text-xs transition">
+                                Batal
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="lg:col-span-8 glass-card rounded-3xl p-6 shadow-xl border border-slate-200">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200 flex-wrap gap-2">
+                        <div>
+                            <h3 class="font-extrabold text-slate-800 text-base">Daftar Sekolah / Kelas Sasaran</h3>
+                            <p class="text-xs text-slate-500">Kelola daftar sekolah pendampingan FASDA</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <span id="totalSchoolsBadge" class="bg-indigo-100 text-indigo-700 font-bold px-3 py-1 rounded-full text-xs">
+                                0 Sekolah
+                            </span>
+                            <button onclick="confirmClearAllSchools()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold rounded-xl text-xs transition flex items-center space-x-1">
+                                <i class="fa-solid fa-trash-can"></i>
+                                <span>Hapus Semua Sekolah</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-slate-100/80 text-slate-600 text-xs uppercase font-extrabold border-b border-slate-200">
+                                    <th class="px-4 py-3 rounded-l-xl">No</th>
+                                    <th class="px-4 py-3">Nama Sekolah</th>
+                                    <th class="px-4 py-3">Jenjang Pendidikan</th>
+                                    <th class="px-4 py-3 text-center">Jumlah Guru</th>
+                                    <th class="px-4 py-3 text-right rounded-r-xl">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="schoolTableBody" class="divide-y divide-slate-100 text-xs">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 4: DATA GURU / SISWA ================= -->
+        <section id="tab-guru" class="tab-content hidden space-y-6">
+            
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200">
+                <div class="flex items-center space-x-3 mb-3">
+                    <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-paste text-lg"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-extrabold text-slate-800 text-base">Copy - Paste Massal Data Guru / Siswa</h3>
+                        <p class="text-xs text-slate-500">Salin daftar nama dari Microsoft Excel / Word / Notepad (satu nama per baris) dan tempel di bawah ini.</p>
+                    </div>
+                </div>
+
+                <form onsubmit="handleBulkPasteSubmit(event)" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Pilih Sekolah Tujuan (Opsional)</label>
+                            <select id="pasteTargetSchool" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-indigo-500">
+                                <option value="">-- Tanpa Sekolah (Sekali Pakai / Tidak Disimpan) --</option>
+                                <!-- Options injected dynamically -->
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <p class="text-[11px] text-slate-500 font-medium leading-relaxed">
+                                <i class="fa-solid fa-circle-info text-indigo-500 mr-1"></i>
+                                <strong>Catatan:</strong> Jika memilih Sekolah, data akan <strong>tersimpan permanen</strong>. Jika memilih "Tanpa Sekolah", data hanya dipakai untuk Spin sesi ini dan <strong>TIDAK tersimpan</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Tempel (Paste) Daftar Nama Di Sini *</label>
+                        <textarea id="pasteRawText" rows="5" required placeholder="Contoh Paste:&#10;ARDIANSYAH, S.Pd&#10;Budi Santoso, S.Pd.&#10;Siti Rahmawati, M.Pd.&#10;Ahmad Dahlan, S.Ag." class="w-full p-3.5 rounded-2xl border border-slate-300 text-xs sm:text-sm font-mono focus:ring-2 focus:ring-indigo-500 bg-slate-50/50"></textarea>
+                    </div>
+
+                    <div class="flex justify-end">
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-6 py-3 rounded-xl text-xs sm:text-sm shadow-lg transition flex items-center space-x-2">
+                            <i class="fa-solid fa-cloud-arrow-up text-base"></i>
+                            <span>Simpan Semua Data Nama Ke Sekolah</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4 pb-3 border-b border-slate-200">
+                    <div>
+                        <h3 class="font-extrabold text-slate-800 text-base">Daftar Guru / Siswa Terdaftar</h3>
+                        <p class="text-xs text-slate-500">Kelola dan filter seluruh data peserta per sekolah</p>
+                    </div>
+
+                    <div class="flex items-center space-x-2 flex-wrap gap-2">
+                        <select id="filterSchoolTable" onchange="renderGuruTab()" class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-bold bg-white">
+                            <option value="ALL">-- Semua Sekolah --</option>
+                        </select>
+
+                        <input type="text" id="searchGuruInput" oninput="renderGuruTab()" placeholder="Cari nama..." class="px-3 py-1.5 rounded-xl border border-slate-300 text-xs font-medium">
+
+                        <button onclick="confirmClearAllGuru()" class="px-3 py-1.5 bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 font-bold rounded-xl text-xs transition flex items-center space-x-1">
+                            <i class="fa-solid fa-user-xmark"></i>
+                            <span>Hapus Semua Guru</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100/80 text-slate-600 text-xs uppercase font-extrabold border-b border-slate-200">
+                                <th class="px-4 py-3 rounded-l-xl">No</th>
+                                <th class="px-4 py-3">Nama Lengkap Peserta</th>
+                                <th class="px-4 py-3">Asal Sekolah</th>
+                                <th class="px-4 py-3 text-center">Status Spin</th>
+                                <th class="px-4 py-3 text-right rounded-r-xl">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guruTableBody" class="divide-y divide-slate-100 text-xs">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 5: DATA FASDA & REKAPITULASI ================= -->
+        <section id="tab-fasda" class="tab-content hidden space-y-6">
+            
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <div class="lg:col-span-5 glass-card rounded-3xl p-6 shadow-xl border border-slate-200 relative overflow-hidden">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+                        <h3 class="font-extrabold text-slate-800 text-base flex items-center space-x-2">
+                            <i class="fa-solid fa-id-card text-indigo-600"></i>
+                            <span>Profil Fasilitator Daerah</span>
+                        </h3>
+                        <button onclick="openFasdaAuthModal()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl text-xs transition flex items-center space-x-1">
+                            <i class="fa-solid fa-lock text-indigo-600"></i>
+                            <span>Edit Profil</span>
+                        </button>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div>
+                            <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Nama Fasilitator Daerah</span>
+                            <h4 id="displayFasdaName" class="text-base font-extrabold text-slate-900">ARDIANSYAH, S.Pd</h4>
+                        </div>
+                        
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">NIP / ID FASDA</span>
+                                <span id="displayFasdaNip" class="font-bold text-slate-700">19880412 201403 1 002</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Wilayah Kerja</span>
+                                <span id="displayFasdaRegion" class="font-bold text-slate-700">Kabupaten Parigi Moutong</span>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2 text-xs">
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Instansi / Unit Kerja</span>
+                                <span id="displayFasdaAgency" class="font-bold text-slate-700">SD NEGERI PARANGGI</span>
+                            </div>
+                            <div>
+                                <span class="block text-[10px] font-bold text-slate-400 uppercase tracking-wider">Modul Pendampingan</span>
+                                <span id="displayFasdaModule" class="font-bold text-indigo-700">Literasi & Numerasi FASDA</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="lg:col-span-7 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    
+                    <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Total Sekolah</span>
+                            <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-school"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="statTotalSchools" class="text-3xl font-black text-slate-800">0</span>
+                            <span class="text-xs text-slate-500 block">Sekolah Sasaran</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Total Peserta</span>
+                            <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-users"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="statTotalGuru" class="text-3xl font-black text-slate-800">0</span>
+                            <span class="text-xs text-slate-500 block">Guru / Siswa</span>
+                        </div>
+                    </div>
+
+                    <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 flex flex-col justify-between">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-500 uppercase">Progres Spin</span>
+                            <div class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold">
+                                <i class="fa-solid fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <span id="statProgresSpin" class="text-3xl font-black text-emerald-600">0%</span>
+                            <span class="text-xs text-slate-500 block">Selesai Undian</span>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+                    <div>
+                        <h3 class="font-extrabold text-slate-800 text-base">Rekapitulasi Partisipasi Per Sekolah</h3>
+                        <p class="text-xs text-slate-500">Persentase guru yang telah dipanggil melalui Spin</p>
+                    </div>
+                    <button onclick="window.print()" class="no-print px-4 py-2 bg-slate-800 hover:bg-slate-900 text-amber-300 font-bold rounded-xl text-xs transition flex items-center space-x-1.5 shadow">
+                        <i class="fa-solid fa-print"></i>
+                        <span>Cetak Laporan / Export PDF</span>
+                    </button>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-100/80 text-slate-600 text-xs uppercase font-extrabold border-b border-slate-200">
+                                <th class="px-4 py-3 rounded-l-xl">Nama Sekolah</th>
+                                <th class="px-4 py-3 text-center">Total Guru</th>
+                                <th class="px-4 py-3 text-center">Sudah Terpilih</th>
+                                <th class="px-4 py-3 text-center">Belum Terpilih</th>
+                                <th class="px-4 py-3 text-right rounded-r-xl">Progres Partisipasi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="fasdaRekapTable" class="divide-y divide-slate-100 text-xs">
+                            <!-- Dynamic Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- ================= TAB 6: PENGATURAN WAKTU / TIMER TAMPIL PESERTA ================= -->
+        <section id="tab-timer" class="tab-content hidden space-y-6">
+            
+            <!-- TOP CONFIGURATION & PRESENTER SELECTOR CARD -->
+            <div class="glass-card rounded-3xl p-5 sm:p-6 shadow-xl border border-slate-200 space-y-4">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xl shadow-inner">
+                            <i class="fa-solid fa-stopwatch text-amber-500"></i>
+                        </div>
+                        <div>
+                            <h3 class="font-extrabold text-slate-900 text-base sm:text-lg">Pengaturan Waktu Hitung Mundur Tampil</h3>
+                            <p class="text-xs text-slate-500 font-medium">Atur durasi presentasi/penampilan untuk peserta yang terpilih dari Spin Wheel.</p>
+                        </div>
+                    </div>
+
+                    <!-- Preset Quick Duration Pills -->
+                    <div class="flex items-center space-x-1.5 flex-wrap gap-1">
+                        <span class="text-xs font-bold text-slate-500 mr-1">Preset Cepat:</span>
+                        <button onclick="setTimerPreset(60)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-700 font-bold text-xs transition">1 Min</button>
+                        <button onclick="setTimerPreset(180)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-700 font-bold text-xs transition">3 Min</button>
+                        <button onclick="setTimerPreset(300)" class="px-3 py-1.5 rounded-xl bg-indigo-600 text-white font-bold text-xs shadow-sm transition">5 Min</button>
+                        <button onclick="setTimerPreset(420)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-700 font-bold text-xs transition">7 Min</button>
+                        <button onclick="setTimerPreset(600)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-700 font-bold text-xs transition">10 Min</button>
+                        <button onclick="setTimerPreset(900)" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-indigo-600 hover:text-white text-slate-700 font-bold text-xs transition">15 Min</button>
+                    </div>
+                </div>
+
+                <!-- SELECT PRESENTER & CUSTOM DURATION FORM -->
+                <div class="grid grid-cols-1 md:grid-cols-12 gap-4 items-end">
+                    
+                    <!-- Presenter Selector Dropdown -->
+                    <div class="md:col-span-5">
+                        <label class="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                            <span>Pilih Peserta yang Tampil:</span>
+                            <span class="text-[11px] text-indigo-600 font-semibold cursor-pointer hover:underline" onclick="loadWinnerToTimerPresenter()">
+                                <i class="fa-solid fa-trophy mr-1"></i> Ambil Pemenang Spin Terakhir
+                            </span>
+                        </label>
+                        <select id="timerPresenterSelect" onchange="onTimerPresenterSelectChange()" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold bg-white focus:ring-2 focus:ring-indigo-500 shadow-sm">
+                            <!-- Populated dynamically via JS -->
+                        </select>
+                    </div>
+
+                    <!-- Custom Minutes & Seconds Inputs -->
+                    <div class="md:col-span-4 flex items-center space-x-2">
+                        <div class="flex-1">
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">Menit</label>
+                            <input type="number" id="timerInputMinutes" min="0" max="180" value="5" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold text-center focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <span class="font-extrabold text-slate-400 pt-5">:</span>
+                        <div class="flex-1">
+                            <label class="block text-[11px] font-bold text-slate-500 mb-1">Detik</label>
+                            <input type="number" id="timerInputSeconds" min="0" max="59" value="0" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs sm:text-sm font-bold text-center focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div class="pt-5">
+                            <button onclick="applyCustomTimerInput()" class="px-3.5 py-2.5 bg-slate-800 hover:bg-slate-900 text-amber-300 font-bold rounded-xl text-xs shadow transition active:scale-95" title="Terapkan Waktu Kustom">
+                                Set Waktu
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Controls for Sound Warning & System Notification Permission -->
+                    <div class="md:col-span-3 flex items-center justify-end space-x-3">
+                        <button id="notifPermBtn" onclick="requestNotificationPermissionUI()" class="px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold rounded-xl text-xs transition flex items-center space-x-1.5 border border-indigo-200" title="Aktifkan Notifikasi Sistem HP/Laptop saat Buka Aplikasi Lain">
+                            <i class="fa-solid fa-bell text-indigo-600"></i>
+                            <span id="notifPermBtnText">Izin Notifikasi HP</span>
+                        </button>
+
+                        <label class="inline-flex items-center cursor-pointer text-xs font-bold text-slate-600">
+                            <input type="checkbox" id="timerSoundWarningCheckbox" checked class="sr-only peer">
+                            <div class="relative w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
+                            <span class="ms-2">Bunyi</span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MAIN TIMER DISPLAY DISPLAY CARD (DIGITAL CLOCK + PROGRESS RING) -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+                
+                <!-- DIGITAL COUNTDOWN DISPLAY CONTAINER (COL-8) -->
+                <div id="timerDisplayCard" class="lg:col-span-8 glass-card bg-gradient-to-b from-slate-900 via-indigo-950 to-slate-950 text-white rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col items-center justify-center relative overflow-hidden border border-indigo-800/60 min-h-[440px]">
+                    
+                    <!-- Background Ambient Light Glow -->
+                    <div id="timerGlowBg" class="absolute inset-0 bg-indigo-500/10 pointer-events-none transition-all duration-500"></div>
+
+                    <!-- Presenter Info Header Badge -->
+                    <div class="text-center z-10 mb-4">
+                        <span class="bg-amber-400/20 text-amber-300 border border-amber-400/30 text-[11px] font-black tracking-widest uppercase px-3 py-1 rounded-full">
+                            SESI PENAMPILAN PESERTA
+                        </span>
+                        <h2 id="timerActivePresenterName" class="text-2xl sm:text-3xl font-black text-white mt-2 mb-0.5">
+                            Pilih / Ambil Nama Peserta
+                        </h2>
+                        <p id="timerActivePresenterSchool" class="text-xs sm:text-sm font-extrabold text-indigo-300">
+                            - Asal Sekolah -
+                        </p>
+                    </div>
+
+                    <!-- CIRCULAR / DIGITAL DISPLAY CENTER -->
+                    <div class="relative flex items-center justify-center my-4 z-10 w-full max-w-md">
+                        <!-- Progress Ring SVG -->
+                        <svg class="w-64 h-64 sm:w-72 sm:h-72 transform -rotate-90" viewBox="0 0 120 120">
+                            <!-- Background Track -->
+                            <circle cx="60" cy="60" r="52" stroke="currentColor" stroke-width="6" class="text-indigo-900/40" fill="transparent" />
+                            <!-- Dynamic Progress Circle -->
+                            <circle id="timerProgressRing" cx="60" cy="60" r="52" stroke="currentColor" stroke-width="7" 
+                                stroke-dasharray="326.7" stroke-dashoffset="0" stroke-linecap="round" 
+                                class="text-emerald-400 transition-all duration-300 ease-linear" fill="transparent" />
+                        </svg>
+
+                        <!-- Digital Time Text inside Ring -->
+                        <div class="absolute flex flex-col items-center justify-center text-center">
+                            <span id="timerClockDisplay" class="font-mono-digits text-5xl sm:text-6xl font-black text-white tracking-tight drop-shadow-lg">
+                                05:00
+                            </span>
+                            <span id="timerStatusLabel" class="text-[11px] font-bold uppercase tracking-wider text-emerald-400 mt-1">
+                                Siap Dimulai
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- TIMER CONTROLS ACTION BUTTON BAR -->
+                    <div class="flex items-center space-x-3 z-10 mt-2 flex-wrap justify-center gap-2">
+                        
+                        <!-- PLAY / PAUSE BUTTON -->
+                        <button id="timerToggleBtn" onclick="toggleTimer()" class="px-8 py-3.5 bg-gradient-to-tr from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-2">
+                            <i id="timerToggleIcon" class="fa-solid fa-play text-base"></i>
+                            <span id="timerToggleText">MULAI TIMER</span>
+                        </button>
+
+                        <!-- RESET BUTTON -->
+                        <button onclick="resetTimer()" class="px-5 py-3.5 bg-slate-800 hover:bg-slate-700 text-indigo-200 border border-indigo-700/60 font-bold text-sm rounded-2xl shadow-lg transition active:scale-95 flex items-center space-x-1.5" title="Kembalikan ke awal durasi">
+                            <i class="fa-solid fa-rotate-left text-amber-400"></i>
+                            <span>Reset</span>
+                        </button>
+
+                        <!-- QUICK ADD TIME BUTTONS -->
+                        <button onclick="addTimerSeconds(30)" class="px-3.5 py-3.5 bg-indigo-900/60 hover:bg-indigo-800 text-amber-300 border border-indigo-700/60 font-bold text-xs rounded-2xl transition shadow active:scale-95">
+                            +30 Detik
+                        </button>
+
+                        <button onclick="addTimerSeconds(60)" class="px-3.5 py-3.5 bg-indigo-900/60 hover:bg-indigo-800 text-amber-300 border border-indigo-700/60 font-bold text-xs rounded-2xl transition shadow active:scale-95">
+                            +1 Menit
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- RECENT PRESENTATION SESSIONS LOG (COL-4) -->
+                <div class="lg:col-span-4 glass-card rounded-3xl p-5 shadow-xl flex flex-col min-h-[400px] max-h-[520px]">
+                    <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                        <h3 class="font-extrabold text-slate-800 text-sm flex items-center space-x-2">
+                            <i class="fa-solid fa-clock-rotate-left text-indigo-600"></i>
+                            <span>Riwayat Tampil Sesi Ini</span>
+                        </h3>
+                        <span id="timerLogCount" class="text-[11px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md font-bold">0 Selesai</span>
+                    </div>
+
+                    <div id="timerLogContainer" class="flex-1 overflow-y-auto space-y-2 mt-3 pr-1 text-xs">
+                        <div class="text-center py-10 text-slate-400 font-medium italic">
+                            Belum ada riwayat penampilan yang dicatat.
+                        </div>
+                    </div>
+
+                    <div class="pt-3 border-t border-slate-200">
+                        <button onclick="clearTimerLogs()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-bold rounded-xl text-xs transition">
+                            Bersihkan Riwayat
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TAB 7: BACA SAYA / PETUNJUK PENGGUNAAN ================= -->
+        <section id="tab-bacasaya" class="tab-content hidden space-y-6">
+            
+            <!-- HEADER BACA SAYA -->
+            <div class="glass-card rounded-3xl p-6 sm:p-8 shadow-xl border border-slate-200 relative overflow-hidden bg-gradient-to-r from-indigo-900 via-indigo-950 to-slate-900 text-white">
+                <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 relative z-10">
+                    <div class="space-y-2">
+                        <div class="inline-flex items-center space-x-2 bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider">
+                            <i class="fa-solid fa-book-open"></i>
+                            <span>Panduan Penggunaan Aplikasi</span>
+                        </div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-white tracking-tight">
+                            Petunjuk & Cara Penggunaan Aplikasi
+                        </h2>
+                        <p class="text-xs sm:text-sm text-indigo-200 font-medium max-w-2xl leading-relaxed">
+                            Aplikasi Spin & Acak Nama FASDA ini dirancang interaktif untuk mempermudah kegiatan pendampingan Fasilitator Daerah. Pelajari langkah demi langkah penggunaan di bawah ini.
+                        </p>
+                    </div>
+                    <div class="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/10 text-center min-w-[180px]">
+                        <span class="block text-[10px] font-bold text-amber-300 uppercase tracking-wider">Pemilik Aplikasi</span>
+                        <strong class="text-sm font-extrabold text-white block mt-0.5">ARDIANSYAH, S.Pd</strong>
+                        <span class="text-xs text-indigo-200">SD NEGERI PARANGGI</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- LANGKAH CEPAT (QUICK START GUIDE) -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200">
+                <h3 class="font-extrabold text-slate-900 text-base sm:text-lg mb-4 flex items-center space-x-2 pb-3 border-b border-slate-200">
+                    <i class="fa-solid fa-rocket text-indigo-600"></i>
+                    <span>Langkah Cepat Memulai (4 Langkah Mudah)</span>
+                </h3>
+
+                <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                    <div class="p-4 bg-indigo-50/60 rounded-2xl border border-indigo-100 flex flex-col justify-between">
+                        <div>
+                            <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white font-black flex items-center justify-center text-sm mb-3">1</div>
+                            <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mb-1">Input Data Sekolah</h4>
+                            <p class="text-[11px] text-slate-600 font-medium">Buka tab <strong>3. Data Sekolah</strong> untuk mendaftarkan nama-nama sekolah pendampingan.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-amber-50/60 rounded-2xl border border-amber-100 flex flex-col justify-between">
+                        <div>
+                            <div class="w-8 h-8 rounded-xl bg-amber-500 text-white font-black flex items-center justify-center text-sm mb-3">2</div>
+                            <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mb-1">Paste Data Guru / Siswa</h4>
+                            <p class="text-[11px] text-slate-600 font-medium">Buka tab <strong>4. Data Guru</strong>, tempel (paste) daftar nama langsung dari Microsoft Excel.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-emerald-50/60 rounded-2xl border border-emerald-100 flex flex-col justify-between">
+                        <div>
+                            <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white font-black flex items-center justify-center text-sm mb-3">3</div>
+                            <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mb-1">Putar Spin Nama / Sekolah</h4>
+                            <p class="text-[11px] text-slate-600 font-medium">Buka tab <strong>1. Spin Nama</strong>, pilih sekolah, lalu klik tombol <strong>SPIN</strong> di tengah roda.</p>
+                        </div>
+                    </div>
+
+                    <div class="p-4 bg-purple-50/60 rounded-2xl border border-purple-100 flex flex-col justify-between">
+                        <div>
+                            <div class="w-8 h-8 rounded-xl bg-purple-600 text-white font-black flex items-center justify-center text-sm mb-3">4</div>
+                            <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm mb-1">Hitung Mundur Waktu Tampil</h4>
+                            <p class="text-[11px] text-slate-600 font-medium">Klik tombol otomatis di modal pemenang untuk masuk ke tab <strong>6. Pengaturan Waktu</strong>.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- DETAIL FITUR & PETUNJUK LENGKAP PER MENU -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- MENU 1: SPIN NAMA -->
+                <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2.5 pb-2 border-b border-slate-200">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-circle-play text-amber-500"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">1. Menu Spin Nama</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600 font-medium list-disc pl-4">
+                        <li><strong>Pilih Sekolah Sasaran:</strong> Gunakan dropdown atas untuk memilih sekolah yang akan diundi pesertanya.</li>
+                        <li><strong>Tombol SPIN:</strong> Klik tombol lingkaran berwarna kuning di tengah roda untuk memulai putaran acak.</li>
+                        <li><strong>Status Terpilih Otomatis:</strong> Peserta yang menang secara otomatis ditandai sebagai <em>"Sudah Terpilih"</em> sehingga tidak akan terpanggil lagi pada putaran berikutnya.</li>
+                        <li><strong>Reset Status Spin:</strong> Gunakan tombol ini jika ingin mengembalikan seluruh peserta sekolah tersebut menjadi aktif kembali.</li>
+                    </ul>
+                </div>
+
+                <!-- MENU 2: SPIN SEKOLAH -->
+                <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2.5 pb-2 border-b border-slate-200">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-dharmachakra text-amber-500"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">2. Menu Spin Sekolah</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600 font-medium list-disc pl-4">
+                        <li><strong>Daftar Hadir Sekolah:</strong> Centang sekolah mana saja yang hadir pada pertemuan pendampingan gabungan.</li>
+                        <li><strong>Pengundian Sekolah:</strong> Putar roda untuk menentukan urutan sekolah mana yang dipanggil tampil terlebih dahulu.</li>
+                        <li><strong>Filter Pilihan:</strong> Gunakan tombol <em>"Pilih Semua"</em> atau <em>"Hapus Pilihan"</em> untuk menyaring sekolah dengan cepat.</li>
+                    </ul>
+                </div>
+
+                <!-- MENU 3: DATA SEKOLAH -->
+                <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2.5 pb-2 border-b border-slate-200">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-school text-indigo-600"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">3. Menu Data Sekolah</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600 font-medium list-disc pl-4">
+                        <li><strong>Tambah / Paste Massal Sekolah:</strong> Pilih Jenjang Pendidikan (SD, SMP, SMA, PAUD, PKBM), lalu tempel (paste) daftar nama sekolah (satu per baris) atau ketik satu nama sekolah.</li>
+                        <li><strong>Tanpa NPSN:</strong> Pengisian sekolah dibuat lebih praktis tanpa perlu memasukkan Kode NPSN.</li>
+                        <li><strong>Edit & Hapus:</strong> Kelola data sekolah sasaran melalui tabel aksi di sebelah kanan.</li>
+                        <li><strong>Hapus Semua Sekolah:</strong> Menghapus seluruh data sekolah dan guru yang terikat.</li>
+                    </ul>
+                </div>
+
+                <!-- MENU 4: DATA GURU / SISWA -->
+                <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2.5 pb-2 border-b border-slate-200">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-users-gear text-indigo-600"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">4. Menu Data Guru / Siswa (Copy-Paste)</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600 font-medium list-disc pl-4">
+                        <li><strong>Input Massal Cepat:</strong> Salin (Copy) satu kolom nama dari Microsoft Excel atau Notepad, lalu tempel (Paste) di kotak teks.</li>
+                        <li><strong>Mode Simpan vs Sekali Pakai:</strong>
+                            <ul class="list-circle pl-4 mt-1 space-y-1 text-slate-500">
+                                <li>• <strong>Pilih Sekolah Tujuan:</strong> Data guru/siswa wajib tersimpan permanen di database & memori.</li>
+                                <li>• <strong>Tanpa Sekolah (Sekali Pakai):</strong> Data dapat langsung di-spin tanpa sekolah tujuan, namun <strong>TIDAK tersimpan</strong> di memori/storage setelah sesi selesai.</li>
+                            </ul>
+                        </li>
+                        <li><strong>Pembersihan Otomatis:</strong> Aplikasi otomatis merapikan format dan menghapus nomor urut seperti `1.`, `2)`, `-`, dll.</li>
+                        <li><strong>Pencarian & Filter:</strong> Gunakan kotak pencarian untuk menemukan nama guru/siswa dengan cepat.</li>
+                    </ul>
+                </div>
+
+                <!-- MENU 5: PROFIL FASDA & REKAP -->
+                <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2.5 pb-2 border-b border-slate-200">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-chart-pie text-indigo-600"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">5. Menu Profil FASDA & Rekap</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600 font-medium list-disc pl-4">
+                        <li><strong>Edit Profil Terproteksi:</strong> Klik tombol <em>"Edit Profil"</em> dan masukkan password keamanan <code class="bg-indigo-100 text-indigo-800 px-1.5 py-0.5 rounded font-mono font-bold">@Bismillah2026</code> untuk mengubah Nama, NIP, Wilayah Kerja, dan Modul Pendampingan.</li>
+                        <li><strong>Statistik Progres:</strong> Memantau persentase partisipasi peserta yang sudah dipanggil Spin per sekolah.</li>
+                        <li><strong>Cetak Laporan / PDF:</strong> Klik tombol cetak di pojok kanan atas rekapitulasi untuk mencetak dokumen atau mengeksport ke bentuk PDF.</li>
+                    </ul>
+                </div>
+
+                <!-- MENU 6: PENGATURAN WAKTU / TIMER -->
+                <div class="glass-card rounded-3xl p-5 shadow-xl border border-slate-200 space-y-3">
+                    <div class="flex items-center space-x-2.5 pb-2 border-b border-slate-200">
+                        <div class="w-8 h-8 rounded-xl bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold">
+                            <i class="fa-solid fa-stopwatch text-amber-500"></i>
+                        </div>
+                        <h4 class="font-extrabold text-slate-800 text-sm sm:text-base">6. Menu Pengaturan Waktu (Timer)</h4>
+                    </div>
+                    <ul class="space-y-2 text-xs text-slate-600 font-medium list-disc pl-4">
+                        <li><strong>Integrasi Otomatis Pemenang:</strong> Ambil nama pemenang spin terakhir hanya dengan mengeklik tombol <em>"Ambil Pemenang Spin Terakhir"</em>.</li>
+                        <li><strong>Preset Waktu & Custom:</strong> Pilih waktu preset (1 Min, 3 Min, 5 Min, 10 Min, 15 Min) atau tentukan sendiri menit & detiknya.</li>
+                        <li><strong>Hitung Mundur Akurat & Latar Belakang:</strong> Timer tetap berjalan presisi meskipun Anda membuka tab atau aplikasi lain di HP/PC.</li>
+                        <li><strong>Notifikasi HP / Laptop:</strong> Klik tombol <em>"Izin Notifikasi HP"</em> agar mendapatkan pemberitahuan pop-up saat waktu tampil habis.</li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- CATATAN TAMBAHAN TENTANG PENYIMPANAN DATA -->
+            <div class="glass-card rounded-3xl p-6 shadow-xl border border-slate-200 bg-slate-50">
+                <h4 class="font-extrabold text-slate-900 text-sm sm:text-base mb-2 flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                    <span>Sistem Penyimpanan Data & Pengaturan Audio / Layar</span>
+                </h4>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs text-slate-600 font-medium mt-3">
+                    <div class="p-3 bg-white rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-cloud-check text-emerald-500"></i> Simpan Otomatis
+                        </strong>
+                        Seluruh data sekolah, guru, status spin, dan profil disimpan otomatis di perangkat Anda (LocalStorage) serta tersinkronisasi secara real-time.
+                    </div>
+                    <div class="p-3 bg-white rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-volume-high text-amber-500"></i> Suara & Audio Efek
+                        </strong>
+                        Gunakan tombol speaker di kanan atas header untuk membungkam (mute) atau mengaktifkan kembali efek suara putaran roda dan alarm timer.
+                    </div>
+                    <div class="p-3 bg-white rounded-xl border border-slate-200">
+                        <strong class="text-slate-800 block mb-1 flex items-center gap-1.5">
+                            <i class="fa-solid fa-expand text-indigo-500"></i> Mode Fullscreen
+                        </strong>
+                        Gunakan tombol layar penuh di kanan atas header saat menyambungkan laptop ke proyektor agar tampilan lebih fokus dan menarik.
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+    </main>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="bg-slate-950 text-slate-400 py-6 border-t border-slate-800 text-center text-xs mt-auto no-print">
+        <div class="max-w-7xl mx-auto px-4 space-y-1">
+            <p class="font-bold text-slate-300">Aplikasi Spin & Acak Nama FASDA Interactive v2.6</p>
+            <p class="text-slate-500">Dikembangkan khusus untuk Pendampingan Fasilitator Daerah oleh <strong class="text-amber-400">ARDIANSYAH, S.Pd | SD NEGERI PARANGGI</strong></p>
+        </div>
+    </footer>
+
+    <!-- ================= MODALS & TOAST NOTIFICATIONS ================= -->
+
+    <!-- TOAST NOTIFICATION -->
+    <div id="toastNotification" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 ease-in-out pointer-events-none">
+        <div id="toastCard" class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 border border-slate-700">
+            <i id="toastIcon" class="fa-solid fa-circle-check text-emerald-400 text-xl"></i>
+            <span id="toastMessage" class="text-xs font-bold">Pesan Notifikasi</span>
+        </div>
+    </div>
+
+    <!-- CONFIRMATION MODAL -->
+    <div id="confirmModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card bg-white rounded-3xl p-6 max-w-sm w-full text-center shadow-2xl border border-slate-200">
+            <div id="confirmIconContainer" class="w-16 h-16 mx-auto bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-2xl mb-3">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 id="confirmTitle" class="text-lg font-black text-slate-900 mb-1">Konfirmasi</h3>
+            <p id="confirmMessage" class="text-xs text-slate-600 mb-6 font-medium">Apakah anda yakin?</p>
+            <div class="flex space-x-2">
+                <button onclick="closeConfirmModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">Batal</button>
+                <button id="confirmActionBtn" class="w-1/2 bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition">Ya, Lanjutkan</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FASDA AUTHENTICATION MODAL -->
+    <div id="fasdaAuthModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card bg-white rounded-3xl p-6 max-w-sm w-full shadow-2xl border border-slate-200 text-center">
+            <div class="w-14 h-14 mx-auto bg-indigo-100 text-indigo-600 rounded-2xl flex items-center justify-center text-2xl mb-3">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="font-extrabold text-slate-800 text-base mb-1">Verifikasi Password FASDA</h3>
+            <p class="text-xs text-slate-500 mb-4 font-medium">Masukkan password keamanan untuk mengubah Profil Fasilitator Daerah.</p>
+            
+            <form onsubmit="verifyFasdaPassword(event)" class="space-y-3">
+                <div>
+                    <input type="password" id="fasdaPasswordInput" required placeholder="Masukkan password..." class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-center focus:ring-2 focus:ring-indigo-500">
+                </div>
+                <div class="flex space-x-2 pt-1">
+                    <button type="button" onclick="closeFasdaAuthModal()" class="w-1/2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold py-2.5 rounded-xl text-xs transition">Batal</button>
+                    <button type="submit" class="w-1/2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2.5 rounded-xl text-xs shadow-md transition">Verifikasi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- FASDA EDIT PROFILE MODAL -->
+    <div id="fasdaEditModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div class="glass-card bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-200">
+                <h3 class="font-extrabold text-slate-800 text-base">Edit Profil FASDA</h3>
+                <button onclick="toggleFasdaEditModal()" class="text-slate-400 hover:text-slate-600 text-lg"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form onsubmit="saveFasdaProfile(event)" class="space-y-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Nama Lengkap FASDA</label>
+                    <input type="text" id="editFasdaName" required class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-bold">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">NIP / ID FASDA</label>
+                    <input type="text" id="editFasdaNip" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Wilayah Kerja</label>
+                    <input type="text" id="editFasdaRegion" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Instansi / Unit Kerja</label>
+                    <input type="text" id="editFasdaAgency" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Modul Pendampingan</label>
+                    <input type="text" id="editFasdaModule" class="w-full px-3.5 py-2 rounded-xl border border-slate-300 text-xs font-medium">
+                </div>
+                <div class="flex justify-end space-x-2 pt-3">
+                    <button type="button" onclick="toggleFasdaEditModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition">Batal</button>
+                    <button type="submit" class="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-xs shadow-md transition">Simpan Profil</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- WINNER CELEBRATION MODAL -->
+    <div id="winnerModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+        <div id="winnerModalCard" class="glass-card bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl border-2 border-amber-400/80 transform scale-95 opacity-0 transition-all duration-300">
+            
+            <div class="w-20 h-20 mx-auto bg-gradient-to-tr from-amber-400 to-yellow-300 text-indigo-950 rounded-full flex items-center justify-center text-4xl shadow-xl mb-4 animate-bounce">
+                <i class="fa-solid fa-trophy"></i>
+            </div>
+
+            <span class="bg-amber-100 text-amber-800 text-[11px] font-black uppercase tracking-widest px-3 py-1 rounded-full border border-amber-300">
+                PEMENANG TERPILIH!
+            </span>
+
+            <h2 id="winnerNameDisplay" class="text-2xl sm:text-3xl font-black text-slate-900 mt-3 mb-1">
+                Nama Pemenang
+            </h2>
+
+            <p id="winnerSchoolDisplay" class="text-sm font-bold text-indigo-600 mb-4">
+                Nama Sekolah
+            </p>
+
+            <div id="winnerStatusNotice" class="p-3 bg-slate-50 rounded-2xl border border-slate-200 mb-5 text-xs text-slate-500 font-medium">
+                <i class="fa-solid fa-check-circle text-emerald-500 mr-1"></i> Status pemenang otomatis diubah menjadi <strong>Non-Aktif (Terpilih)</strong>.
+            </div>
+
+            <div class="space-y-2">
+                <!-- INTEGRATION BUTTON TO TIMER TAB -->
+                <button onclick="startTimerFromWinnerModal()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-black py-3 rounded-xl text-xs sm:text-sm shadow-lg transition active:scale-95 flex items-center justify-center space-x-2">
+                    <i class="fa-solid fa-stopwatch text-base"></i>
+                    <span>Mulai Hitung Mundur Tampil (5 Min)</span>
+                </button>
+
+                <button id="winnerActionButton" onclick="closeWinnerModal()" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold py-3 rounded-xl text-xs sm:text-sm shadow-xl transition active:scale-95 flex items-center justify-center space-x-2">
+                    <span>Tutup & Lanjutkan</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT LOGIC ENGINE ================= -->
+    <script>
+        // APP CONSTANTS & STORAGE KEYS
+        const STORAGE_KEY = 'fasda_spin_app_v26';
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'fasda-spin-paranggi-app';
+        let db = null;
+        let auth = null;
+        let setDocFn = null;
+        let docFn = null;
+        let onSnapshotFn = null;
+
+        // DYNAMIC ASYNC FIREBASE LOADER
+        async function initFirebase() {
+            if (typeof __firebase_config !== 'undefined') {
+                try {
+                    const { initializeApp } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js");
+                    const { getAuth, signInAnonymously, signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                    const firestoreModule = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js");
+
+                    const firebaseConfig = JSON.parse(__firebase_config);
+                    const app = initializeApp(firebaseConfig);
+                    db = firestoreModule.getFirestore(app);
+                    auth = getAuth(app);
+                    docFn = firestoreModule.doc;
+                    setDocFn = firestoreModule.setDoc;
+                    onSnapshotFn = firestoreModule.onSnapshot;
+
+                    initCloudSync();
+                } catch (err) {
+                    console.warn("Firebase tidak dapat dimuat, berjalan dalam Mode Simpan Lokal:", err);
+                    updateCloudStatusBadge(true, "Tersimpan Lokal");
+                }
+            } else {
+                updateCloudStatusBadge(true, "Tersimpan Lokal");
+            }
+        }
+
+        // INITIAL DEFAULT DATA STATE
+        const DEFAULT_STATE = {
+            fasda: {
+                name: 'ARDIANSYAH, S.Pd',
+                nip: '19880412 201403 1 002',
+                region: 'Kabupaten Parigi Moutong',
+                agency: 'SD NEGERI PARANGGI',
+                module: 'Literasi & Numerasi FASDA'
+            },
+            schools: [
+                { id: 'sch-1', name: 'SD NEGERI PARANGGI', code: 'NPSN-4020192', level: 'SD/MI', includedInSpin: true, spinStatus: 'active' },
+                { id: 'sch-2', name: 'SDN 1 AMPIBABO', code: 'NPSN-4020193', level: 'SD/MI', includedInSpin: true, spinStatus: 'active' },
+                { id: 'sch-3', name: 'SMP NEGERI 1 PARANGGI', code: 'NPSN-4020194', level: 'SMP/MTs', includedInSpin: true, spinStatus: 'active' }
+            ],
+            participants: [
+                { id: 'p-1', schoolId: 'sch-1', name: 'ARDIANSYAH, S.Pd', status: 'active' },
+                { id: 'p-2', schoolId: 'sch-1', name: 'Rahmatia, S.Pd.SD', status: 'active' },
+                { id: 'p-3', schoolId: 'sch-1', name: 'Moh. Rizal, S.Ag.', status: 'active' },
+                { id: 'p-4', schoolId: 'sch-1', name: 'Hj. Ratna, M.Pd.', status: 'active' },
+                { id: 'p-5', schoolId: 'sch-1', name: 'Fikram, S.Pd.', status: 'active' },
+                
+                { id: 'p-6', schoolId: 'sch-2', name: 'Dewi Sartika, S.Pd.', status: 'active' },
+                { id: 'p-7', schoolId: 'sch-2', name: 'Bambang Irawan, M.Pd.', status: 'active' },
+                { id: 'p-8', schoolId: 'sch-2', name: 'Nurhayani, S.Pd.', status: 'active' },
+
+                { id: 'p-9', schoolId: 'sch-3', name: 'Dr. Hendra Wijaya', status: 'active' },
+                { id: 'p-10', schoolId: 'sch-3', name: 'Fitriani, S.Si.', status: 'active' }
+            ],
+            selectedSchoolId: 'sch-1',
+            soundEnabled: true,
+            lastWinner: { name: '', school: '' },
+            timerLogs: []
+        };
+
+        let state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+        let activeFilterType = 'all';
+
+        // Wheel Physics & Graphics Variables (Spin Nama)
+        let canvas, ctx;
+        let startAngle = 0;
+        let spinTimeout = null;
+        let spinArcStart = 0;
+        let spinTime = 0;
+        let spinTimeTotal = 0;
+        let isSpinning = false;
+        let lastSegmentIndex = -1;
+        let audioCtx = null;
+
+        // Wheel Physics & Graphics Variables (Spin Sekolah)
+        let schoolCanvas, schoolCtx;
+        let schoolStartAngle = 0;
+        let schoolSpinTimeout = null;
+        let schoolSpinArcStart = 0;
+        let schoolSpinTime = 0;
+        let schoolSpinTimeTotal = 0;
+        let isSchoolSpinning = false;
+        let lastSchoolSegmentIndex = -1;
+
+        // BACKGROUND TIMER & WORKER ENGINE STATE
+        let timerTotalSeconds = 300; // 5 minutes
+        let timerRemainingSeconds = 300;
+        let timerInterval = null;
+        let isTimerRunning = false;
+        let currentPresenter = { name: 'Belum Dipilih', school: 'Pilih Peserta' };
+        let warningChimeTriggered = false;
+        
+        let timerEndTime = 0;
+        let timerWorker = null;
+        let wakeLock = null;
+
+        const sliceColors = [
+            '#4F46E5', '#10B981', '#F59E0B', '#EF4444', 
+            '#8B5CF6', '#06B6D4', '#EC4899', '#3B82F6', 
+            '#14B8A6', '#F97316', '#84CC16', '#64748B'
+        ];
+
+        function sanitizeState() {
+            if (!state.schools) state.schools = [];
+            state.schools.forEach(s => {
+                if (s.includedInSpin === undefined) s.includedInSpin = true;
+                if (s.spinStatus === undefined) s.spinStatus = 'active';
+            });
+            if (!state.timerLogs) state.timerLogs = [];
+            if (!state.lastWinner) state.lastWinner = { name: '', school: '' };
+        }
+
+        // DUAL PERSISTENCE STRATEGY (LOCALSTORAGE + CLOUD FIRESTORE)
+        function loadLocalState() {
+            try {
+                const saved = localStorage.getItem(STORAGE_KEY);
+                if (saved) {
+                    return JSON.parse(saved);
+                }
+            } catch(e) {}
+            return null;
+        }
+
+        function saveStateToStorage() {
+            sanitizeState();
+            
+            // Create state object excluding temporary (non-school) participants & temporary school entry
+            const persistentState = JSON.parse(JSON.stringify(state));
+            persistentState.participants = persistentState.participants.filter(p => !p.isTemporary && p.schoolId !== 'TEMP');
+            persistentState.schools = persistentState.schools.filter(s => s.id !== 'TEMP');
+
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(persistentState));
+            } catch(e) {}
+
+            if (!db || !auth || !auth.currentUser || !docFn || !setDocFn) {
+                updateCloudStatusBadge(true, "Tersimpan Lokal");
+                return;
+            }
+
+            updateCloudStatusBadge(true, "Menyimpan...");
+            const docRef = docFn(db, 'artifacts', appId, 'public', 'data', 'fasda_spin', 'main_state');
+            setDocFn(docRef, {
+                state: persistentState,
+                updatedAt: new Date().toISOString()
+            }).then(() => {
+                updateCloudStatusBadge(true, "Tersimpan Otomatis");
+            }).catch((err) => {
+                console.error("Cloud Save Error:", err);
+                updateCloudStatusBadge(true, "Tersimpan Lokal");
+            });
+        }
+
+        async function initCloudSync() {
+            if (!db || !auth || !docFn || !onSnapshotFn) {
+                updateCloudStatusBadge(true, "Tersimpan Lokal");
+                return;
+            }
+
+            try {
+                let userCredential;
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    try { 
+                        const { signInWithCustomToken } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                        userCredential = await signInWithCustomToken(auth, __initial_auth_token); 
+                    } catch (e) { 
+                        const { signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                        userCredential = await signInAnonymously(auth); 
+                    }
+                } else {
+                    const { signInAnonymously } = await import("https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js");
+                    userCredential = await signInAnonymously(auth);
+                }
+
+                if (!userCredential?.user) return;
+
+                const docRef = docFn(db, 'artifacts', appId, 'public', 'data', 'fasda_spin', 'main_state');
+                onSnapshotFn(docRef, (docSnap) => {
+                    if (docSnap.exists() && docSnap.data()?.state) {
+                        state = docSnap.data().state;
+                        sanitizeState();
+                        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+                        refreshAllUI();
+                        updateCloudStatusBadge(true, "Tersimpan Otomatis");
+                    } else {
+                        saveStateToStorage();
+                    }
+                }, (err) => {
+                    updateCloudStatusBadge(true, "Tersimpan Lokal");
+                });
+            } catch (err) {
+                updateCloudStatusBadge(true, "Tersimpan Lokal");
+            }
+        }
+
+        function updateCloudStatusBadge(isSuccess, message) {
+            const badge = document.getElementById('cloudSyncBadge');
+            const icon = document.getElementById('cloudSyncIcon');
+            const text = document.getElementById('cloudSyncText');
+            if (!badge || !icon || !text) return;
+
+            text.innerText = message;
+            if (isSuccess) {
+                badge.className = "flex items-center space-x-1.5 text-xs px-3 py-1.5 rounded-full bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 shadow-inner";
+                icon.className = "fa-solid fa-cloud-check text-emerald-400 text-sm";
+            } else {
+                badge.className = "flex items-center space-x-1.5 text-xs px-3 py-1.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/40 shadow-inner";
+                icon.className = "fa-solid fa-cloud-arrow-up text-amber-400 text-sm";
+            }
+        }
+
+        // ================= WEB AUDIO API SOUND SYNTHESIS =================
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playTickSound() {
+            if (!state.soundEnabled) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(650, audioCtx.currentTime);
+                osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.03);
+                gain.gain.setValueAtTime(0.15, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.03);
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + 0.03);
+            } catch(e) {}
+        }
+
+        function playWinFanfare() {
+            if (!state.soundEnabled) return;
+            try {
+                initAudio();
+                const notes = [261.63, 329.63, 392.00, 523.25, 659.25];
+                notes.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.09);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime + idx * 0.09);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.09 + 0.4);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.09);
+                    osc.stop(audioCtx.currentTime + idx * 0.09 + 0.4);
+                });
+            } catch(e) {}
+        }
+
+        function playTimerWarningSound() {
+            if (!state.soundEnabled) return;
+            const soundEnabledCheckbox = document.getElementById('timerSoundWarningCheckbox');
+            if (soundEnabledCheckbox && !soundEnabledCheckbox.checked) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                [880, 880].forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.15);
+                    gain.gain.setValueAtTime(0.25, audioCtx.currentTime + idx * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.15 + 0.12);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.15);
+                    osc.stop(audioCtx.currentTime + idx * 0.15 + 0.12);
+                });
+            } catch(e) {}
+        }
+
+        function playTimerFinishedAlarm() {
+            if (!state.soundEnabled) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const freqs = [523.25, 659.25, 783.99, 1046.50];
+                freqs.forEach((freq, idx) => {
+                    const osc = audioCtx.createOscillator();
+                    const gain = audioCtx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(freq, audioCtx.currentTime + idx * 0.12);
+                    gain.gain.setValueAtTime(0.3, audioCtx.currentTime + idx * 0.12);
+                    gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + idx * 0.12 + 0.5);
+                    osc.connect(gain);
+                    gain.connect(audioCtx.destination);
+                    osc.start(audioCtx.currentTime + idx * 0.12);
+                    osc.stop(audioCtx.currentTime + idx * 0.12 + 0.5);
+                });
+            } catch(e) {}
+        }
+
+        function toggleSound() {
+            state.soundEnabled = !state.soundEnabled;
+            saveStateToStorage();
+            updateSoundIcon();
+            showToast(state.soundEnabled ? "Suara Ditingkatkan (Mute OFF)" : "Suara Diheningkan (Mute ON)");
+        }
+
+        function updateSoundIcon() {
+            const icon = document.getElementById('soundIcon');
+            const btn = document.getElementById('soundToggleBtn');
+            if (!icon || !btn) return;
+            if (state.soundEnabled) {
+                icon.className = "fa-solid fa-volume-high text-base text-amber-300";
+                btn.title = "Beralih Suara (Mute)";
+            } else {
+                icon.className = "fa-solid fa-volume-xmark text-base text-rose-400";
+                btn.title = "Beralih Suara (Unmute)";
+            }
+        }
+
+        function toggleFullScreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    showToast("Layar penuh tidak didukung di peramban ini.");
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+
+        // ================= TAB NAVIGATION ENGINE =================
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.className = 'nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all text-indigo-200 hover:bg-indigo-950/60 hover:text-white';
+            });
+
+            const activeContent = document.getElementById('tab-' + tabId);
+            const activeNav = document.getElementById('nav-' + tabId);
+
+            if (activeContent) activeContent.classList.remove('hidden');
+            if (activeNav) {
+                activeNav.className = 'nav-btn px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold flex items-center space-x-2 transition-all bg-indigo-800 text-amber-400 shadow-md border border-indigo-700/50';
+            }
+
+            if (tabId === 'spin') {
+                setTimeout(drawWheel, 50);
+            } else if (tabId === 'spin-sekolah') {
+                setTimeout(drawSchoolWheel, 50);
+            } else if (tabId === 'timer') {
+                populateTimerPresenterDropdown();
+                updateTimerDisplay();
+                updateNotificationBtnUI();
+            }
+        }
+
+        // ================= SPIN WHEEL NAMA (TAB 1) =================
+        function getActiveParticipantsForSelectedSchool() {
+            return state.participants.filter(p => p.schoolId === state.selectedSchoolId && p.status === 'active');
+        }
+
+        function drawWheel() {
+            canvas = document.getElementById('wheelCanvas');
+            if (!canvas) return;
+            ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const activeList = getActiveParticipantsForSelectedSchool();
+            const numSegments = activeList.length;
+            const outsideRadius = 200;
+            const insideRadius = 50;
+
+            if (numSegments === 0) {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(220, 220, outsideRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#1e293b';
+                ctx.fill();
+                ctx.strokeStyle = '#475569';
+                ctx.lineWidth = 4;
+                ctx.stroke();
+
+                ctx.fillStyle = '#94a3b8';
+                ctx.font = 'bold 15px Plus Jakarta Sans';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('Semua Peserta Terpilih!', 220, 220);
+                ctx.restore();
+                return;
+            }
+
+            const arc = Math.PI * 2 / numSegments;
+            // Ukuran font dinamis menyesuaikan jumlah segmen agar tidak berhimpitan
+            const fontSize = Math.max(9, Math.min(13, Math.floor(280 / numSegments)));
+
+            for (let i = 0; i < numSegments; i++) {
+                const angle = startAngle + i * arc;
+                ctx.fillStyle = sliceColors[i % sliceColors.length];
+
+                ctx.beginPath();
+                ctx.arc(220, 220, outsideRadius, angle, angle + arc, false);
+                ctx.arc(220, 220, insideRadius, angle + arc, angle, true);
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                ctx.fill();
+
+                // Diputar 90 derajat searah jari-jari roda (Radial Text Alignment)
+                ctx.save();
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold ${fontSize}px 'Plus Jakarta Sans', sans-serif`;
+                ctx.textAlign = 'right';
+                ctx.textBaseline = 'middle';
+                ctx.translate(220, 220);
+                ctx.rotate(angle + arc / 2);
+
+                let text = activeList[i].name;
+                const maxChars = Math.max(12, Math.floor(140 / (fontSize * 0.55)));
+                if (text.length > maxChars) text = text.substring(0, maxChars - 2) + '..';
+
+                ctx.fillText(text, outsideRadius - 15, 0);
+                ctx.restore();
+            }
+        }
+
+        function spinWheel() {
+            if (isSpinning) return;
+            const activeList = getActiveParticipantsForSelectedSchool();
+            if (activeList.length === 0) {
+                showToast("Tidak ada peserta aktif yang tersisa untuk di-spin!", "warning");
+                return;
+            }
+
+            isSpinning = true;
+            document.getElementById('spinBtn').disabled = true;
+            spinArcStart = Math.random() * 25 + 35; // Kecepatan awal ditingkatkan (35 - 60 deg/tick)
+            spinTime = 0;
+            spinTimeTotal = Math.random() * 4000 + 6000; // Durasi spin diperpanjang (6 - 10 detik)
+            lastSegmentIndex = -1;
+            rotateWheel();
+        }
+
+        function rotateWheel() {
+            spinTime += 30;
+            if (spinTime >= spinTimeTotal) {
+                stopRotateWheel();
+                return;
+            }
+            const spinAngle = spinArcStart - easeOut(spinTime, 0, spinArcStart, spinTimeTotal);
+            startAngle += (spinAngle * Math.PI / 180);
+            drawWheel();
+
+            const activeList = getActiveParticipantsForSelectedSchool();
+            if (activeList.length > 0) {
+                const arc = Math.PI * 2 / activeList.length;
+                const currentDegrees = (startAngle * 180 / Math.PI) % 360;
+                const currentIndex = Math.floor((360 - currentDegrees % 360) / (arc * 180 / Math.PI)) % activeList.length;
+                if (currentIndex !== lastSegmentIndex) {
+                    lastSegmentIndex = currentIndex;
+                    playTickSound();
+                }
+            }
+
+            spinTimeout = setTimeout(rotateWheel, 30);
+        }
+
+        function stopRotateWheel() {
+            clearTimeout(spinTimeout);
+            isSpinning = false;
+            document.getElementById('spinBtn').disabled = false;
+
+            const activeList = getActiveParticipantsForSelectedSchool();
+            const arc = Math.PI * 2 / activeList.length;
+            const degrees = startAngle * 180 / Math.PI + 90;
+            const arcd = arc * 180 / Math.PI;
+            const index = Math.floor((360 - degrees % 360) / arcd) % activeList.length;
+            
+            const winner = activeList[index];
+            if (winner) {
+                winner.status = 'done';
+                const school = state.schools.find(s => s.id === winner.schoolId);
+                const schoolName = school ? school.name : 'Sekolah';
+                
+                state.lastWinner = { name: winner.name, school: schoolName };
+                
+                // Only trigger persistent storage if winner is not temporary
+                if (!winner.isTemporary && winner.schoolId !== 'TEMP') {
+                    saveStateToStorage();
+                }
+                
+                playWinFanfare();
+                triggerConfetti();
+                showWinnerModal(winner.name, schoolName);
+                refreshAllUI();
+            }
+        }
+
+        // ================= SPIN WHEEL SEKOLAH (TAB 2) =================
+        function getIncludedActiveSchools() {
+            return state.schools.filter(s => s.includedInSpin && s.spinStatus === 'active');
+        }
+
+        function drawSchoolWheel() {
+            schoolCanvas = document.getElementById('schoolWheelCanvas');
+            if (!schoolCanvas) return;
+            schoolCtx = schoolCanvas.getContext('2d');
+            schoolCtx.clearRect(0, 0, schoolCanvas.width, schoolCanvas.height);
+
+            const activeList = getIncludedActiveSchools();
+            const numSegments = activeList.length;
+            const outsideRadius = 200;
+            const insideRadius = 50;
+
+            if (numSegments === 0) {
+                schoolCtx.save();
+                schoolCtx.beginPath();
+                schoolCtx.arc(220, 220, outsideRadius, 0, Math.PI * 2);
+                schoolCtx.fillStyle = '#1e293b';
+                schoolCtx.fill();
+                schoolCtx.strokeStyle = '#475569';
+                schoolCtx.lineWidth = 4;
+                schoolCtx.stroke();
+
+                schoolCtx.fillStyle = '#94a3b8';
+                schoolCtx.font = 'bold 15px Plus Jakarta Sans';
+                schoolCtx.textAlign = 'center';
+                schoolCtx.textBaseline = 'middle';
+                schoolCtx.fillText('Tidak ada sekolah terpilih/aktif!', 220, 220);
+                schoolCtx.restore();
+                return;
+            }
+
+            const arc = Math.PI * 2 / numSegments;
+            const fontSize = Math.max(9, Math.min(13, Math.floor(280 / numSegments)));
+
+            for (let i = 0; i < numSegments; i++) {
+                const angle = schoolStartAngle + i * arc;
+                schoolCtx.fillStyle = sliceColors[(i + 3) % sliceColors.length];
+
+                schoolCtx.beginPath();
+                schoolCtx.arc(220, 220, outsideRadius, angle, angle + arc, false);
+                schoolCtx.arc(220, 220, insideRadius, angle + arc, angle, true);
+                schoolCtx.strokeStyle = '#ffffff';
+                schoolCtx.lineWidth = 3;
+                schoolCtx.stroke();
+                schoolCtx.fill();
+
+                // Diputar 90 derajat searah jari-jari roda (Radial Text Alignment)
+                schoolCtx.save();
+                schoolCtx.fillStyle = '#ffffff';
+                schoolCtx.font = `bold ${fontSize}px 'Plus Jakarta Sans', sans-serif`;
+                schoolCtx.textAlign = 'right';
+                schoolCtx.textBaseline = 'middle';
+                schoolCtx.translate(220, 220);
+                schoolCtx.rotate(angle + arc / 2);
+
+                let text = activeList[i].name;
+                const maxChars = Math.max(12, Math.floor(140 / (fontSize * 0.55)));
+                if (text.length > maxChars) text = text.substring(0, maxChars - 2) + '..';
+
+                schoolCtx.fillText(text, outsideRadius - 15, 0);
+                schoolCtx.restore();
+            }
+        }
+
+        function spinSchoolWheel() {
+            if (isSchoolSpinning) return;
+            const activeList = getIncludedActiveSchools();
+            if (activeList.length === 0) {
+                showToast("Centang dan aktifkan minimal 1 sekolah di daftar hadir!", "warning");
+                return;
+            }
+
+            isSchoolSpinning = true;
+            document.getElementById('spinSchoolBtn').disabled = true;
+            schoolSpinArcStart = Math.random() * 25 + 35; // Kecepatan ditingkatkan
+            schoolSpinTime = 0;
+            schoolSpinTimeTotal = Math.random() * 4000 + 6000; // Durasi diperpanjang
+            lastSchoolSegmentIndex = -1;
+            rotateSchoolWheel();
+        }
+
+        function rotateSchoolWheel() {
+            schoolSpinTime += 30;
+            if (schoolSpinTime >= schoolSpinTimeTotal) {
+                stopRotateSchoolWheel();
+                return;
+            }
+            const spinAngle = schoolSpinArcStart - easeOut(schoolSpinTime, 0, schoolSpinArcStart, schoolSpinTimeTotal);
+            schoolStartAngle += (spinAngle * Math.PI / 180);
+            drawSchoolWheel();
+
+            const activeList = getIncludedActiveSchools();
+            if (activeList.length > 0) {
+                const arc = Math.PI * 2 / activeList.length;
+                const currentDegrees = (schoolStartAngle * 180 / Math.PI) % 360;
+                const currentIndex = Math.floor((360 - currentDegrees % 360) / (arc * 180 / Math.PI)) % activeList.length;
+                if (currentIndex !== lastSchoolSegmentIndex) {
+                    lastSchoolSegmentIndex = currentIndex;
+                    playTickSound();
+                }
+            }
+
+            schoolSpinTimeout = setTimeout(rotateSchoolWheel, 30);
+        }
+
+        function stopRotateSchoolWheel() {
+            clearTimeout(schoolSpinTimeout);
+            isSchoolSpinning = false;
+            document.getElementById('spinSchoolBtn').disabled = false;
+
+            const activeList = getIncludedActiveSchools();
+            const arc = Math.PI * 2 / activeList.length;
+            const degrees = schoolStartAngle * 180 / Math.PI + 90;
+            const arcd = arc * 180 / Math.PI;
+            const index = Math.floor((360 - degrees % 360) / arcd) % activeList.length;
+
+            const winnerSchool = activeList[index];
+            if (winnerSchool) {
+                winnerSchool.spinStatus = 'done';
+                state.selectedSchoolId = winnerSchool.id;
+                state.lastWinner = { name: winnerSchool.name, school: 'Pengundian Sekolah' };
+                saveStateToStorage();
+
+                playWinFanfare();
+                triggerConfetti();
+                showWinnerModal(winnerSchool.name, "Sekolah Terpilih!");
+                refreshAllUI();
+            }
+        }
+
+        function easeOut(t, b, c, d) {
+            const ts = (t /= d) * t;
+            const tc = ts * t;
+            return b + c * (tc + -3 * ts + 3 * t);
+        }
+
+        // ================= TAB 6: PENGATURAN WAKTU & ACCURATE BACKGROUND TIMER ENGINE =================
+        
+        // WEB WORKER INITIALIZATION FOR BACKGROUND CONTINUOUS TICKS
+        function createTimerWorker() {
+            if (timerWorker) return;
+            try {
+                const blobCode = `
+                    let intervalId = null;
+                    self.onmessage = function(e) {
+                        if (e.data === 'start') {
+                            if (intervalId) clearInterval(intervalId);
+                            intervalId = setInterval(() => { self.postMessage('tick'); }, 500);
+                        } else if (e.data === 'stop') {
+                            if (intervalId) clearInterval(intervalId);
+                            intervalId = null;
+                        }
+                    };
+                `;
+                const blob = new Blob([blobCode], { type: 'application/javascript' });
+                const workerUrl = URL.createObjectURL(blob);
+                timerWorker = new Worker(workerUrl);
+                timerWorker.onmessage = function(e) {
+                    if (e.data === 'tick') {
+                        handleTimerTick();
+                    }
+                };
+            } catch (err) {
+                console.warn("Web Worker background timer fallback used:", err);
+            }
+        }
+
+        // MAIN TICK CALCULATOR BASED ON REAL-TIME TIMESTAMP (Date.now())
+        function handleTimerTick() {
+            if (!isTimerRunning) return;
+
+            const now = Date.now();
+            const remaining = Math.max(0, Math.ceil((timerEndTime - now) / 1000));
+            timerRemainingSeconds = remaining;
+
+            if (timerRemainingSeconds <= 30 && timerRemainingSeconds > 0 && !warningChimeTriggered) {
+                warningChimeTriggered = true;
+                playTimerWarningSound();
+            }
+
+            if (timerRemainingSeconds <= 0) {
+                finishTimer();
+            } else {
+                updateTimerDisplay();
+            }
+        }
+
+        function populateTimerPresenterDropdown() {
+            const select = document.getElementById('timerPresenterSelect');
+            if (!select) return;
+
+            let html = '<option value="">-- Pilih Nama Peserta Terdaftar --</option>';
+            
+            state.schools.forEach(sch => {
+                const schoolParticipants = state.participants.filter(p => p.schoolId === sch.id);
+                if (schoolParticipants.length > 0) {
+                    html += `<optgroup label="${sch.name}">`;
+                    schoolParticipants.forEach(p => {
+                        const statusBadge = p.status === 'done' ? ' (Terpilih)' : '';
+                        html += `<option value="${p.id}">${p.name}${statusBadge}</option>`;
+                    });
+                    html += `</optgroup>`;
+                }
+            });
+
+            select.innerHTML = html;
+        }
+
+        function onTimerPresenterSelectChange() {
+            const select = document.getElementById('timerPresenterSelect');
+            if (!select || !select.value) return;
+
+            const participant = state.participants.find(p => p.id === select.value);
+            if (participant) {
+                const school = state.schools.find(s => s.id === participant.schoolId);
+                currentPresenter = {
+                    name: participant.name,
+                    school: school ? school.name : 'Sekolah'
+                };
+                updatePresenterDisplay();
+            }
+        }
+
+        function loadWinnerToTimerPresenter() {
+            if (state.lastWinner && state.lastWinner.name) {
+                currentPresenter = {
+                    name: state.lastWinner.name,
+                    school: state.lastWinner.school || 'Sekolah'
+                };
+                updatePresenterDisplay();
+                showToast(`Presenter diatur ke pemenang spin: ${currentPresenter.name}`);
+            } else {
+                showToast("Belum ada data pemenang spin terakhir.", "warning");
+            }
+        }
+
+        function updatePresenterDisplay() {
+            const nameEl = document.getElementById('timerActivePresenterName');
+            const schoolEl = document.getElementById('timerActivePresenterSchool');
+            if (nameEl) nameEl.innerText = currentPresenter.name;
+            if (schoolEl) schoolEl.innerText = currentPresenter.school;
+        }
+
+        function setTimerPreset(seconds) {
+            if (isTimerRunning) pauseTimer();
+            timerTotalSeconds = seconds;
+            timerRemainingSeconds = seconds;
+            
+            const mins = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+            document.getElementById('timerInputMinutes').value = mins;
+            document.getElementById('timerInputSeconds').value = secs;
+
+            warningChimeTriggered = false;
+            updateTimerDisplay();
+            showToast(`Durasi timer diatur ke ${mins} Menit`);
+        }
+
+        function applyCustomTimerInput() {
+            if (isTimerRunning) pauseTimer();
+            const mins = parseInt(document.getElementById('timerInputMinutes').value) || 0;
+            const secs = parseInt(document.getElementById('timerInputSeconds').value) || 0;
+            const total = (mins * 60) + secs;
+
+            if (total <= 0) {
+                showToast("Durasi waktu harus lebih dari 0 detik!", "warning");
+                return;
+            }
+
+            timerTotalSeconds = total;
+            timerRemainingSeconds = total;
+            warningChimeTriggered = false;
+            updateTimerDisplay();
+            showToast(`Waktu kustom diatur: ${formatTimeDigits(timerRemainingSeconds)}`);
+        }
+
+        function toggleTimer() {
+            if (isTimerRunning) {
+                pauseTimer();
+            } else {
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            if (timerRemainingSeconds <= 0) {
+                timerRemainingSeconds = timerTotalSeconds;
+            }
+
+            timerEndTime = Date.now() + (timerRemainingSeconds * 1000);
+            isTimerRunning = true;
+            warningChimeTriggered = (timerRemainingSeconds <= 30);
+            updateTimerToggleBtn();
+
+            // Screen WakeLock
+            requestWakeLock();
+
+            // Background Web Worker
+            createTimerWorker();
+            if (timerWorker) {
+                timerWorker.postMessage('start');
+            }
+
+            // Fallback Main Thread Interval
+            if (timerInterval) clearInterval(timerInterval);
+            timerInterval = setInterval(() => {
+                handleTimerTick();
+            }, 500);
+
+            updateTimerDisplay();
+            showToast("Timer Dimulai! Berjalan akurat meski membuka aplikasi lain.");
+        }
+
+        function pauseTimer() {
+            isTimerRunning = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+            if (timerWorker) {
+                timerWorker.postMessage('stop');
+            }
+            releaseWakeLock();
+            updateTimerToggleBtn();
+            updateTimerDisplay();
+            showToast("Timer Dijeda");
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timerRemainingSeconds = timerTotalSeconds;
+            warningChimeTriggered = false;
+            updateTimerDisplay();
+            showToast("Timer Direset");
+        }
+
+        function addTimerSeconds(extraSecs) {
+            timerRemainingSeconds += extraSecs;
+            timerTotalSeconds += extraSecs;
+            if (isTimerRunning) {
+                timerEndTime += (extraSecs * 1000);
+            }
+            updateTimerDisplay();
+            showToast(`Ditambahkan +${extraSecs} detik`);
+        }
+
+        function finishTimer() {
+            pauseTimer();
+            timerRemainingSeconds = 0;
+            updateTimerDisplay();
+            playTimerFinishedAlarm();
+            sendTimerFinishedNotification(currentPresenter.name);
+
+            // Log session to recent history
+            if (currentPresenter.name && currentPresenter.name !== 'Belum Dipilih') {
+                const logItem = {
+                    id: 'log-' + Date.now(),
+                    name: currentPresenter.name,
+                    school: currentPresenter.school,
+                    duration: formatTimeDigits(timerTotalSeconds),
+                    timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                };
+                state.timerLogs.unshift(logItem);
+                if (state.timerLogs.length > 20) state.timerLogs.pop();
+                saveStateToStorage();
+                renderTimerLogs();
+            }
+
+            showToast(`Waktu tampil ${currentPresenter.name} TELAH HABIS!`, "warning");
+        }
+
+        // SCREEN WAKE LOCK API TO PREVENT DISPLAY SLEEP DURING PRESENTATION
+        async function requestWakeLock() {
+            try {
+                if ('wakeLock' in navigator) {
+                    wakeLock = await navigator.wakeLock.request('screen');
+                }
+            } catch (err) {}
+        }
+
+        function releaseWakeLock() {
+            if (wakeLock) {
+                wakeLock.release().then(() => { wakeLock = null; }).catch(() => { wakeLock = null; });
+            }
+        }
+
+        // SYSTEM NOTIFICATIONS ON DESKTOP / MOBILE
+        function requestNotificationPermissionUI() {
+            if (!('Notification' in window)) {
+                showToast("Peramban Anda tidak mendukung Notifikasi Sistem.", "warning");
+                return;
+            }
+            if (Notification.permission === 'granted') {
+                showToast("Notifikasi Sistem sudah AKTIF!");
+            } else {
+                Notification.requestPermission().then(permission => {
+                    if (permission === 'granted') {
+                        showToast("Notifikasi Sistem Berhasil Diaktifkan!");
+                        updateNotificationBtnUI();
+                    } else {
+                        showToast("Izin Notifikasi Ditolak.", "warning");
+                    }
+                });
+            }
+        }
+
+        function updateNotificationBtnUI() {
+            const btnText = document.getElementById('notifPermBtnText');
+            if (!btnText) return;
+            if ('Notification' in window && Notification.permission === 'granted') {
+                btnText.innerText = "Notifikasi Aktif";
+            } else {
+                btnText.innerText = "Izinkan Notifikasi";
+            }
+        }
+
+        function sendTimerFinishedNotification(presenterName) {
+            if ('Notification' in window && Notification.permission === 'granted') {
+                try {
+                    new Notification("Waktu Tampil Habis! ⏰", {
+                        body: `Sesi penampilan untuk ${presenterName} telah selesai.`,
+                        tag: 'fasda-timer-notification',
+                        requireInteraction: true
+                    });
+                } catch(e) {}
+            }
+        }
+
+        // SYNCHRONIZE TIMER IMMEDIATELY UPON SWITCHING BACK TO APP
+        function syncTimerOnFocus() {
+            if (isTimerRunning && timerEndTime > 0) {
+                handleTimerTick();
+            }
+        }
+
+        document.addEventListener('visibilitychange', () => {
+            if (document.visibilityState === 'visible') {
+                syncTimerOnFocus();
+            }
+        });
+        window.addEventListener('focus', syncTimerOnFocus);
+        window.addEventListener('pageshow', syncTimerOnFocus);
+
+        function updateTimerToggleBtn() {
+            const btn = document.getElementById('timerToggleBtn');
+            const icon = document.getElementById('timerToggleIcon');
+            const text = document.getElementById('timerToggleText');
+
+            if (!btn || !icon || !text) return;
+
+            if (isTimerRunning) {
+                btn.className = "px-8 py-3.5 bg-gradient-to-tr from-amber-500 to-amber-400 hover:from-amber-400 hover:to-amber-300 text-slate-950 font-black text-sm rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-2";
+                icon.className = "fa-solid fa-pause text-base";
+                text.innerText = "JEDA TIMER";
+            } else {
+                btn.className = "px-8 py-3.5 bg-gradient-to-tr from-emerald-500 to-teal-400 hover:from-emerald-400 hover:to-teal-300 text-slate-950 font-black text-sm rounded-2xl shadow-xl transition transform active:scale-95 flex items-center space-x-2";
+                icon.className = "fa-solid fa-play text-base";
+                text.innerText = "MULAI TIMER";
+            }
+        }
+
+        function updateTimerDisplay() {
+            const clockEl = document.getElementById('timerClockDisplay');
+            const ringEl = document.getElementById('timerProgressRing');
+            const statusLabel = document.getElementById('timerStatusLabel');
+            const displayCard = document.getElementById('timerDisplayCard');
+
+            if (!clockEl || !ringEl || !statusLabel) return;
+
+            clockEl.innerText = formatTimeDigits(timerRemainingSeconds);
+
+            // Progress Ring calculation (Circumference ~ 326.7)
+            const circumference = 326.7;
+            const fraction = timerTotalSeconds > 0 ? (timerRemainingSeconds / timerTotalSeconds) : 0;
+            const offset = circumference - (fraction * circumference);
+            ringEl.style.strokeDashoffset = offset;
+
+            // Visual Status & Ring Colors
+            if (timerRemainingSeconds <= 0) {
+                statusLabel.innerText = "WAKTU HABIS!";
+                statusLabel.className = "text-[11px] font-black uppercase tracking-wider text-rose-400 animate-pulse";
+                ringEl.setAttribute('class', 'text-rose-500 transition-all duration-300 ease-linear');
+                displayCard.classList.add('animate-timer-pulse');
+            } else if (timerRemainingSeconds <= 30) {
+                statusLabel.innerText = "PERINGATAN WAKTU SEGERA HABIS!";
+                statusLabel.className = "text-[11px] font-extrabold uppercase tracking-wider text-amber-400 animate-pulse";
+                ringEl.setAttribute('class', 'text-amber-400 transition-all duration-300 ease-linear');
+                displayCard.classList.remove('animate-timer-pulse');
+            } else if (isTimerRunning) {
+                statusLabel.innerText = "SEDANG TAMPIL...";
+                statusLabel.className = "text-[11px] font-extrabold uppercase tracking-wider text-emerald-400";
+                ringEl.setAttribute('class', 'text-emerald-400 transition-all duration-300 ease-linear');
+                displayCard.classList.remove('animate-timer-pulse');
+            } else {
+                statusLabel.innerText = "SIAP DIMULAI";
+                statusLabel.className = "text-[11px] font-bold uppercase tracking-wider text-indigo-300";
+                ringEl.setAttribute('class', 'text-indigo-400 transition-all duration-300 ease-linear');
+                displayCard.classList.remove('animate-timer-pulse');
+            }
+        }
+
+        function formatTimeDigits(totalSecs) {
+            const mins = Math.floor(Math.max(0, totalSecs) / 60);
+            const secs = Math.max(0, totalSecs) % 60;
+            return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function startTimerFromWinnerModal() {
+            closeWinnerModal();
+            loadWinnerToTimerPresenter();
+            setTimerPreset(300); // 5 minutes
+            switchTab('timer');
+            setTimeout(startTimer, 300);
+        }
+
+        function renderTimerLogs() {
+            const container = document.getElementById('timerLogContainer');
+            const countBadge = document.getElementById('timerLogCount');
+            if (!container) return;
+
+            if (countBadge) countBadge.innerText = `${state.timerLogs.length} Selesai`;
+
+            if (state.timerLogs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-10 text-slate-400 font-medium italic">
+                        Belum ada riwayat penampilan yang dicatat.
+                    </div>`;
+                return;
+            }
+
+            let html = '';
+            state.timerLogs.forEach(log => {
+                html += `
+                    <div class="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between shadow-sm">
+                        <div>
+                            <div class="font-extrabold text-slate-800 text-xs">${log.name}</div>
+                            <div class="text-[10px] font-semibold text-slate-500">${log.school}</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="font-mono-digits font-bold text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded border border-indigo-100 text-xs">${log.duration}</span>
+                            <span class="block text-[10px] text-slate-400 mt-0.5">${log.timestamp}</span>
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function clearTimerLogs() {
+            state.timerLogs = [];
+            saveStateToStorage();
+            renderTimerLogs();
+            showToast("Riwayat timer dibersihkan.");
+        }
+
+        // ================= DATA MANAGEMENT HELPERS & UI RENDERERS =================
+        function populateSchoolDropdowns() {
+            const spinSelect = document.getElementById('spinSchoolSelect');
+            const pasteSelect = document.getElementById('pasteTargetSchool');
+            const filterSelect = document.getElementById('filterSchoolTable');
+
+            // Check if there are temporary participants
+            const hasTempParticipants = state.participants.some(p => p.schoolId === 'TEMP');
+            let displaySchools = [...state.schools];
+            if (hasTempParticipants && !displaySchools.some(s => s.id === 'TEMP')) {
+                displaySchools.push({ id: 'TEMP', name: '⚡ Tanpa Sekolah (Sementara / Sekali Pakai)', code: 'TEMP', level: 'Sementara' });
+            }
+
+            if (spinSelect) {
+                let html = '';
+                displaySchools.forEach(s => {
+                    html += `<option value="${s.id}" ${s.id === state.selectedSchoolId ? 'selected' : ''}>${s.name} ${s.level !== 'Sementara' ? '(' + s.level + ')' : ''}</option>`;
+                });
+                spinSelect.innerHTML = html || '<option value="">-- Belum Ada Sekolah --</option>';
+            }
+
+            if (pasteSelect) {
+                let html = '<option value="">-- Tanpa Sekolah (Sekali Pakai / Tidak Disimpan) --</option>';
+                state.schools.forEach(s => {
+                    html += `<option value="${s.id}">${s.name}</option>`;
+                });
+                pasteSelect.innerHTML = html;
+            }
+
+            if (filterSelect) {
+                let html = '<option value="ALL">-- Semua Sekolah --</option>';
+                displaySchools.forEach(s => {
+                    html += `<option value="${s.id}">${s.name}</option>`;
+                });
+                filterSelect.innerHTML = html;
+            }
+
+            const currentSchool = displaySchools.find(s => s.id === state.selectedSchoolId);
+            const badge = document.getElementById('schoolBadge');
+            if (badge) badge.innerText = currentSchool ? currentSchool.name : 'Pilih Sekolah';
+        }
+
+        function onSpinSchoolChange() {
+            const select = document.getElementById('spinSchoolSelect');
+            if (select) {
+                state.selectedSchoolId = select.value;
+                saveStateToStorage();
+                refreshAllUI();
+            }
+        }
+
+        function resetCurrentSchoolStatus() {
+            state.participants.forEach(p => {
+                if (p.schoolId === state.selectedSchoolId) p.status = 'active';
+            });
+            saveStateToStorage();
+            refreshAllUI();
+            showToast("Status spin peserta sekolah ini di-reset!");
+        }
+
+        function filterParticipantList(type) {
+            activeFilterType = type;
+            ['all', 'active', 'done'].forEach(t => {
+                const btn = document.getElementById('filter-' + t);
+                if (btn) {
+                    if (t === type) {
+                        btn.className = "flex-1 py-1.5 rounded-lg bg-indigo-600 text-white font-bold transition";
+                    } else {
+                        btn.className = "flex-1 py-1.5 rounded-lg text-slate-600 hover:bg-slate-200 transition";
+                    }
+                }
+            });
+            renderParticipantList();
+        }
+
+        function renderParticipantList() {
+            const container = document.getElementById('participantListContainer');
+            if (!container) return;
+
+            const schoolParticipants = state.participants.filter(p => p.schoolId === state.selectedSchoolId);
+            const activeCount = schoolParticipants.filter(p => p.status === 'active').length;
+            const doneCount = schoolParticipants.filter(p => p.status === 'done').length;
+
+            const countActiveEl = document.getElementById('countActive');
+            const countInactiveEl = document.getElementById('countInactive');
+            if (countActiveEl) countActiveEl.innerText = activeCount;
+            if (countInactiveEl) countInactiveEl.innerText = doneCount;
+
+            let filtered = schoolParticipants;
+            if (activeFilterType === 'active') filtered = schoolParticipants.filter(p => p.status === 'active');
+            if (activeFilterType === 'done') filtered = schoolParticipants.filter(p => p.status === 'done');
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 font-medium text-xs italic">Tidak ada peserta untuk kategori ini.</div>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach(p => {
+                const isDone = p.status === 'done';
+                html += `
+                    <div class="p-2.5 rounded-xl border flex items-center justify-between text-xs transition ${isDone ? 'bg-slate-100 border-slate-200 text-slate-400 line-through' : 'bg-white border-slate-200 text-slate-800 font-bold shadow-sm'}">
+                        <span class="truncate pr-2">${p.name}</span>
+                        <div class="flex items-center space-x-1">
+                            <button onclick="toggleGuruStatus('${p.id}')" class="px-2 py-1 rounded-lg text-[10px] font-bold ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                                ${isDone ? 'Aktifkan' : 'Terpilih'}
+                            </button>
+                        </div>
+                    </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // SCHOOL SPIN TAB RENDERERS
+        function selectAllSchoolsForSpin(flag) {
+            state.schools.forEach(s => s.includedInSpin = flag);
+            saveStateToStorage();
+            refreshAllUI();
+        }
+
+        function resetSchoolSpinStatus() {
+            state.schools.forEach(s => s.spinStatus = 'active');
+            saveStateToStorage();
+            refreshAllUI();
+            showToast("Status Spin Sekolah di-reset!");
+        }
+
+        function renderSchoolAttendanceCheckboxes() {
+            const container = document.getElementById('schoolAttendanceContainer');
+            if (!container) return;
+
+            let html = '';
+            state.schools.forEach(s => {
+                html += `
+                    <label class="inline-flex items-center bg-white px-3 py-1.5 rounded-xl border border-slate-200 text-xs font-bold text-slate-700 shadow-sm cursor-pointer hover:bg-slate-50">
+                        <input type="checkbox" ${s.includedInSpin ? 'checked' : ''} onchange="toggleSchoolSpinInclusion('${s.id}')" class="rounded text-indigo-600 focus:ring-indigo-500 mr-2 w-4 h-4">
+                        <span>${s.name}</span>
+                    </label>`;
+            });
+            container.innerHTML = html || '<span class="text-xs text-slate-400">Belum ada sekolah terdaftar.</span>';
+        }
+
+        function toggleSchoolSpinInclusion(schoolId) {
+            const sch = state.schools.find(s => s.id === schoolId);
+            if (sch) {
+                sch.includedInSpin = !sch.includedInSpin;
+                saveStateToStorage();
+                refreshAllUI();
+            }
+        }
+
+        function renderSchoolSpinSidebar() {
+            const container = document.getElementById('schoolSpinSidebarContainer');
+            const countBadge = document.getElementById('schoolSpinActiveCount');
+            if (!container) return;
+
+            const included = state.schools.filter(s => s.includedInSpin);
+            const activeCount = included.filter(s => s.spinStatus === 'active').length;
+
+            if (countBadge) countBadge.innerText = `${activeCount} Aktif`;
+
+            if (included.length === 0) {
+                container.innerHTML = `<div class="text-center py-8 text-slate-400 text-xs font-medium italic">Tidak ada sekolah yang dicentang.</div>`;
+                return;
+            }
+
+            let html = '';
+            included.forEach(s => {
+                const isDone = s.spinStatus === 'done';
+                html += `
+                    <div class="p-2.5 rounded-xl border flex items-center justify-between text-xs transition ${isDone ? 'bg-slate-100 border-slate-200 text-slate-400 line-through' : 'bg-white border-slate-200 text-slate-800 font-bold shadow-sm'}">
+                        <span class="truncate pr-2">${s.name}</span>
+                        <button onclick="toggleSchoolSpinStatus('${s.id}')" class="px-2 py-1 rounded-lg text-[10px] font-bold ${isDone ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}">
+                            ${isDone ? 'Aktifkan' : 'Terpilih'}
+                        </button>
+                    </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        function toggleSchoolSpinStatus(schoolId) {
+            const sch = state.schools.find(s => s.id === schoolId);
+            if (sch) {
+                sch.spinStatus = sch.spinStatus === 'done' ? 'active' : 'done';
+                saveStateToStorage();
+                refreshAllUI();
+            }
+        }
+
+        // SCHOOL FORM & TABLE
+        function handleSchoolFormSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('schoolId').value;
+            const nameText = document.getElementById('schoolName').value;
+            const level = document.getElementById('schoolLevel').value;
+
+            if (id) {
+                // Edit satu sekolah
+                const sch = state.schools.find(s => s.id === id);
+                if (sch) {
+                    sch.name = nameText.trim();
+                    sch.level = level;
+                }
+            } else {
+                // Input massal / single via copy-paste multi-line
+                const lines = nameText.split('\n');
+                let addedCount = 0;
+
+                lines.forEach(line => {
+                    let cleaned = line.trim();
+                    // Bersihkan nomor urut atau penanda seperti "1.", "2)", "-"
+                    cleaned = cleaned.replace(/^[\d\.\)\-\*]+\s*/, '').trim();
+                    if (cleaned.length > 0) {
+                        const newSchool = {
+                            id: 'sch-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                            name: cleaned,
+                            level: level,
+                            includedInSpin: true,
+                            spinStatus: 'active'
+                        };
+                        state.schools.push(newSchool);
+                        addedCount++;
+                    }
+                });
+
+                if (addedCount > 0 && !state.selectedSchoolId) {
+                    state.selectedSchoolId = state.schools[state.schools.length - addedCount].id;
+                }
+            }
+
+            saveStateToStorage();
+            resetSchoolForm();
+            refreshAllUI();
+            showToast("Data sekolah berhasil disimpan!");
+        }
+
+        function resetSchoolForm() {
+            document.getElementById('schoolId').value = '';
+            document.getElementById('schoolName').value = '';
+            document.getElementById('schoolFormTitle').innerHTML = '<i class="fa-solid fa-school-circle-plus text-indigo-600"></i><span>Tambah Sekolah / Kelas</span>';
+        }
+
+        function editSchool(id) {
+            const sch = state.schools.find(s => s.id === id);
+            if (!sch) return;
+            document.getElementById('schoolId').value = sch.id;
+            document.getElementById('schoolName').value = sch.name;
+            document.getElementById('schoolLevel').value = sch.level;
+            document.getElementById('schoolFormTitle').innerHTML = '<i class="fa-solid fa-pen-to-square text-indigo-600"></i><span>Edit Data Sekolah</span>';
+        }
+
+        function deleteSchool(id) {
+            confirmAction("Hapus Sekolah", "Apakah Anda yakin ingin menghapus sekolah ini beserta seluruh data gurunya?", () => {
+                state.schools = state.schools.filter(s => s.id !== id);
+                state.participants = state.participants.filter(p => p.schoolId !== id);
+                if (state.selectedSchoolId === id) {
+                    state.selectedSchoolId = state.schools.length > 0 ? state.schools[0].id : '';
+                }
+                saveStateToStorage();
+                refreshAllUI();
+                showToast("Sekolah berhasil dihapus.");
+            });
+        }
+
+        function confirmClearAllSchools() {
+            confirmAction("Hapus Semua Sekolah", "Seluruh data sekolah dan guru akan dihapus permanen. Lanjutkan?", () => {
+                state.schools = [];
+                state.participants = [];
+                state.selectedSchoolId = '';
+                saveStateToStorage();
+                refreshAllUI();
+                showToast("Semua data sekolah telah dibersihkan.");
+            });
+        }
+
+        function renderSchoolTable() {
+            const tbody = document.getElementById('schoolTableBody');
+            const totalBadge = document.getElementById('totalSchoolsBadge');
+            if (!tbody) return;
+
+            if (totalBadge) totalBadge.innerText = `${state.schools.length} Sekolah`;
+
+            if (state.schools.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400 italic font-medium">Belum ada data sekolah. Silakan tambahkan pada formulir di samping.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            state.schools.forEach((s, idx) => {
+                const countGuru = state.participants.filter(p => p.schoolId === s.id).length;
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3 font-bold text-slate-500">${idx + 1}</td>
+                        <td class="px-4 py-3 font-extrabold text-slate-800">${s.name}</td>
+                        <td class="px-4 py-3 text-slate-600"><span class="bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded text-[10px] font-bold">${s.level}</span></td>
+                        <td class="px-4 py-3 text-center font-bold text-indigo-600">${countGuru} Guru</td>
+                        <td class="px-4 py-3 text-right space-x-1">
+                            <button onclick="editSchool('${s.id}')" class="p-1.5 bg-indigo-50 text-indigo-600 hover:bg-indigo-100 rounded-lg font-bold transition" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteSchool('${s.id}')" class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold transition" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        // GURU MANAGEMENT & BULK PASTE
+        function handleBulkPasteSubmit(e) {
+            e.preventDefault();
+            const schoolId = document.getElementById('pasteTargetSchool').value;
+            const rawText = document.getElementById('pasteRawText').value;
+
+            const isTemporary = !schoolId; // Temporary if no target school is selected
+            const targetSchoolId = isTemporary ? 'TEMP' : schoolId;
+
+            // Ensure TEMP virtual school exists in runtime if temporary
+            if (isTemporary && !state.schools.some(s => s.id === 'TEMP')) {
+                state.schools.push({
+                    id: 'TEMP',
+                    name: '⚡ Tanpa Sekolah (Sementara / Sekali Pakai)',
+                    code: 'TEMP',
+                    level: 'Sementara',
+                    includedInSpin: false,
+                    spinStatus: 'active'
+                });
+            }
+
+            const lines = rawText.split('\n');
+            let addedCount = 0;
+
+            lines.forEach(line => {
+                let cleaned = line.trim();
+                // Strip numbers or bullets like "1.", "2)", "-"
+                cleaned = cleaned.replace(/^[\d\.\)\-\*]+\s*/, '').trim();
+                if (cleaned.length > 0) {
+                    state.participants.push({
+                        id: 'p-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4),
+                        schoolId: targetSchoolId,
+                        name: cleaned,
+                        status: 'active',
+                        isTemporary: isTemporary
+                    });
+                    addedCount++;
+                }
+            });
+
+            state.selectedSchoolId = targetSchoolId;
+
+            if (!isTemporary) {
+                saveStateToStorage();
+                showToast(`Berhasil menyimpan ${addedCount} nama peserta ke sekolah!`);
+            } else {
+                // Do NOT save to persistent storage for temporary input
+                showToast(`Menambahkan ${addedCount} nama (Sementara / Tidak Disimpan)`, "warning");
+            }
+
+            document.getElementById('pasteRawText').value = '';
+            refreshAllUI();
+        }
+
+        function renderGuruTab() {
+            const tbody = document.getElementById('guruTableBody');
+            const filterSchool = document.getElementById('filterSchoolTable')?.value || 'ALL';
+            const searchQuery = (document.getElementById('searchGuruInput')?.value || '').toLowerCase();
+
+            if (!tbody) return;
+
+            let filtered = state.participants;
+            if (filterSchool !== 'ALL') {
+                filtered = filtered.filter(p => p.schoolId === filterSchool);
+            }
+            if (searchQuery) {
+                filtered = filtered.filter(p => p.name.toLowerCase().includes(searchQuery));
+            }
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400 italic font-medium">Tidak ada data peserta ditemukan.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            filtered.forEach((p, idx) => {
+                const school = state.schools.find(s => s.id === p.schoolId);
+                const schoolName = school ? school.name : (p.isTemporary ? '⚡ Sementara' : '-');
+                const isDone = p.status === 'done';
+                const tempBadge = p.isTemporary ? ' <span class="bg-amber-100 text-amber-800 text-[9px] px-1.5 py-0.5 rounded font-bold">Sekali Pakai</span>' : '';
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3 font-bold text-slate-500">${idx + 1}</td>
+                        <td class="px-4 py-3 font-extrabold text-slate-800">${p.name}${tempBadge}</td>
+                        <td class="px-4 py-3 text-slate-600 font-semibold">${schoolName}</td>
+                        <td class="px-4 py-3 text-center">
+                            <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${isDone ? 'bg-amber-100 text-amber-800' : 'bg-emerald-100 text-emerald-800'}">
+                                ${isDone ? 'Sudah Terpilih' : 'Aktif (Belum Spin)'}
+                            </span>
+                        </td>
+                        <td class="px-4 py-3 text-right space-x-1">
+                            <button onclick="toggleGuruStatus('${p.id}')" class="px-2 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition">
+                                Toggle Status
+                            </button>
+                            <button onclick="deleteGuru('${p.id}')" class="p-1.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-lg font-bold transition">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function toggleGuruStatus(id) {
+            const p = state.participants.find(item => item.id === id);
+            if (p) {
+                p.status = p.status === 'done' ? 'active' : 'done';
+                saveStateToStorage();
+                refreshAllUI();
+            }
+        }
+
+        function deleteGuru(id) {
+            state.participants = state.participants.filter(p => p.id !== id);
+            saveStateToStorage();
+            refreshAllUI();
+            showToast("Peserta berhasil dihapus.");
+        }
+
+        function confirmClearAllGuru() {
+            confirmAction("Hapus Semua Guru", "Seluruh data peserta guru/siswa dari semua sekolah akan dihapus. Lanjutkan?", () => {
+                state.participants = [];
+                saveStateToStorage();
+                refreshAllUI();
+                showToast("Semua data peserta telah dihapus.");
+            });
+        }
+
+        // FASDA PROFIL & REKAP
+        const FASDA_PASSWORD = '@Bismillah2026';
+
+        function openFasdaAuthModal() {
+            const authModal = document.getElementById('fasdaAuthModal');
+            const passInput = document.getElementById('fasdaPasswordInput');
+            if (passInput) passInput.value = '';
+            if (authModal) authModal.classList.remove('hidden');
+        }
+
+        function closeFasdaAuthModal() {
+            const authModal = document.getElementById('fasdaAuthModal');
+            if (authModal) authModal.classList.add('hidden');
+        }
+
+        function verifyFasdaPassword(e) {
+            e.preventDefault();
+            const input = document.getElementById('fasdaPasswordInput').value;
+            if (input === FASDA_PASSWORD) {
+                closeFasdaAuthModal();
+                toggleFasdaEditModal();
+                showToast("Password benar! Silakan edit profil FASDA.");
+            } else {
+                showToast("Password salah! Akses untuk mengubah profil ditolak.", "warning");
+            }
+        }
+
+        function renderFasdaTab() {
+            if (state.fasda) {
+                const nameEl = document.getElementById('displayFasdaName');
+                const nipEl = document.getElementById('displayFasdaNip');
+                const regionEl = document.getElementById('displayFasdaRegion');
+                const agencyEl = document.getElementById('displayFasdaAgency');
+                const moduleEl = document.getElementById('displayFasdaModule');
+
+                if (nameEl) nameEl.innerText = state.fasda.name;
+                if (nipEl) nipEl.innerText = state.fasda.nip;
+                if (regionEl) regionEl.innerText = state.fasda.region;
+                if (agencyEl) agencyEl.innerText = state.fasda.agency;
+                if (moduleEl) moduleEl.innerText = state.fasda.module;
+            }
+
+            const totalSchools = state.schools.length;
+            const totalGuru = state.participants.length;
+            const doneGuru = state.participants.filter(p => p.status === 'done').length;
+            const progress = totalGuru > 0 ? Math.round((doneGuru / totalGuru) * 100) : 0;
+
+            const statSchoolsEl = document.getElementById('statTotalSchools');
+            const statGuruEl = document.getElementById('statTotalGuru');
+            const statProgresEl = document.getElementById('statProgresSpin');
+
+            if (statSchoolsEl) statSchoolsEl.innerText = totalSchools;
+            if (statGuruEl) statGuruEl.innerText = totalGuru;
+            if (statProgresEl) statProgresEl.innerText = `${progress}%`;
+
+            // Rekap Table
+            const tbody = document.getElementById('fasdaRekapTable');
+            if (!tbody) return;
+
+            if (state.schools.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-8 text-center text-slate-400 italic font-medium">Belum ada sekolah untuk direkapitulasi.</td></tr>`;
+                return;
+            }
+
+            let html = '';
+            state.schools.forEach(s => {
+                const schoolParticipants = state.participants.filter(p => p.schoolId === s.id);
+                const total = schoolParticipants.length;
+                const done = schoolParticipants.filter(p => p.status === 'done').length;
+                const active = total - done;
+                const pct = total > 0 ? Math.round((done / total) * 100) : 0;
+
+                html += `
+                    <tr class="hover:bg-slate-50 transition">
+                        <td class="px-4 py-3 font-extrabold text-slate-800">${s.name}</td>
+                        <td class="px-4 py-3 text-center font-bold text-slate-700">${total}</td>
+                        <td class="px-4 py-3 text-center font-bold text-amber-600">${done}</td>
+                        <td class="px-4 py-3 text-center font-bold text-emerald-600">${active}</td>
+                        <td class="px-4 py-3 text-right">
+                            <div class="flex items-center justify-end space-x-2">
+                                <span class="font-extrabold text-slate-700">${pct}%</span>
+                                <div class="w-16 bg-slate-200 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-indigo-600 h-2 rounded-full" style="width: ${pct}%"></div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>`;
+            });
+            tbody.innerHTML = html;
+        }
+
+        function toggleFasdaEditModal() {
+            const modal = document.getElementById('fasdaEditModal');
+            if (!modal) return;
+            if (modal.classList.contains('hidden')) {
+                document.getElementById('editFasdaName').value = state.fasda.name;
+                document.getElementById('editFasdaNip').value = state.fasda.nip;
+                document.getElementById('editFasdaRegion').value = state.fasda.region;
+                document.getElementById('editFasdaAgency').value = state.fasda.agency;
+                document.getElementById('editFasdaModule').value = state.fasda.module;
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function saveFasdaProfile(e) {
+            e.preventDefault();
+            state.fasda = {
+                name: document.getElementById('editFasdaName').value,
+                nip: document.getElementById('editFasdaNip').value,
+                region: document.getElementById('editFasdaRegion').value,
+                agency: document.getElementById('editFasdaAgency').value,
+                module: document.getElementById('editFasdaModule').value
+            };
+            saveStateToStorage();
+            toggleFasdaEditModal();
+            refreshAllUI();
+            showToast("Profil FASDA berhasil diperbarui!");
+        }
+
+        // WINNER & CONFETTI MODALS
+        function showWinnerModal(name, school) {
+            const modal = document.getElementById('winnerModal');
+            const card = document.getElementById('winnerModalCard');
+            const nameEl = document.getElementById('winnerNameDisplay');
+            const schoolEl = document.getElementById('winnerSchoolDisplay');
+
+            if (!modal || !card) return;
+
+            if (nameEl) nameEl.innerText = name;
+            if (schoolEl) schoolEl.innerText = school;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                card.classList.remove('scale-95', 'opacity-0');
+                card.classList.add('scale-100', 'opacity-100');
+            }, 10);
+        }
+
+        function closeWinnerModal() {
+            const modal = document.getElementById('winnerModal');
+            const card = document.getElementById('winnerModalCard');
+            if (!modal || !card) return;
+
+            card.classList.remove('scale-100', 'opacity-100');
+            card.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        function triggerConfetti() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // TOAST & CONFIRMATION MODAL UTILS
+        function showToast(msg, type = 'success') {
+            const toast = document.getElementById('toastNotification');
+            const msgEl = document.getElementById('toastMessage');
+            const icon = document.getElementById('toastIcon');
+
+            if (!toast || !msgEl) return;
+
+            msgEl.innerText = msg;
+            if (type === 'warning') {
+                icon.className = "fa-solid fa-triangle-exclamation text-amber-400 text-xl";
+            } else {
+                icon.className = "fa-solid fa-circle-check text-emerald-400 text-xl";
+            }
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        let confirmCallback = null;
+        function confirmAction(title, message, callback) {
+            const modal = document.getElementById('confirmModal');
+            const titleEl = document.getElementById('confirmTitle');
+            const msgEl = document.getElementById('confirmMessage');
+            const actionBtn = document.getElementById('confirmActionBtn');
+
+            if (!modal) return;
+
+            if (titleEl) titleEl.innerText = title;
+            if (msgEl) msgEl.innerText = message;
+            confirmCallback = callback;
+
+            if (actionBtn) {
+                actionBtn.onclick = () => {
+                    if (confirmCallback) confirmCallback();
+                    closeConfirmModal();
+                };
+            }
+
+            modal.classList.remove('hidden');
+        }
+
+        function closeConfirmModal() {
+            const modal = document.getElementById('confirmModal');
+            if (modal) modal.classList.add('hidden');
+            confirmCallback = null;
+        }
+
+        // REFRESH ALL UI COMPONENTS
+        function refreshAllUI() {
+            populateSchoolDropdowns();
+            renderParticipantList();
+            renderSchoolAttendanceCheckboxes();
+            renderSchoolSpinSidebar();
+            renderSchoolTable();
+            renderGuruTab();
+            renderFasdaTab();
+            populateTimerPresenterDropdown();
+            renderTimerLogs();
+            drawWheel();
+            drawSchoolWheel();
+            updateSoundIcon();
+        }
+
+        // INITIALIZATION ON DOM READY
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedState = loadLocalState();
+            if (savedState) {
+                state = savedState;
+                sanitizeState();
+            }
+            initFirebase();
+            refreshAllUI();
+            updateNotificationBtnUI();
+
+            window.addEventListener('resize', () => {
+                drawWheel();
+                drawSchoolWheel();
+            });
+        });
+    </script>
+</body>
+</html>
